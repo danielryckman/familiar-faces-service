@@ -1,0 +1,6 @@
+com/example/todo/service/TaskServiceTest$unhappycases.class
+com/example/todo/integration/TasksControllerIntegrationTest.class
+com/example/todo/service/TaskServiceTest$happycases.class
+com/example/todo/mocks/TaskMocks.class
+com/example/todo/TodoApplicationTests.class
+com/example/todo/service/TaskServiceTest.class
