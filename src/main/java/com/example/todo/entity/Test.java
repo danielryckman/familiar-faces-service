@@ -10,6 +10,8 @@ import com.example.todo.entity.Question;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Getter
@@ -54,5 +56,15 @@ public class Test {
     
     public void setQuestion(List<Question> questionList){
     	question = new HashSet<Question>(questionList);
+    }
+    
+    @JsonBackReference
+    public User getMyuser(){
+    	return myuser;
+    }
+    
+    @JsonManagedReference
+    public Set<Question> getQuestion(){
+    	return question;
     }
 }

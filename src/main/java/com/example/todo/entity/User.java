@@ -14,6 +14,7 @@ import com.example.todo.entity.Familymember;
 import com.example.todo.entity.Test;
 import com.example.todo.entity.Photo;
 import com.example.todo.entity.Record;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Getter
@@ -70,10 +71,12 @@ public class User {
     @OneToMany(mappedBy="myuser",cascade = CascadeType.ALL)
     private Set<Task> tasks = new HashSet<>();
     
+    @JsonManagedReference
     public Set<Familymember> getFamilymembers(){
     	return familymembers;
     }
     
+    @JsonManagedReference
     public Set<Task> getTasks(){
     	return tasks;
     }

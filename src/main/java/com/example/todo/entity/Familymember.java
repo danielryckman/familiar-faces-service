@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import com.example.todo.entity.User;
 import com.example.todo.entity.Photo;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 @Entity
@@ -56,6 +57,11 @@ public class Familymember {
     @JoinColumn(name = "myuser", referencedColumnName = "id", nullable=true)
     private User myuser;
         
+    @JsonBackReference
+    public User getMyuser(){
+    	return myuser;
+    }
+    
     public void setMyuser(User user){
     	myuser =user;
     }

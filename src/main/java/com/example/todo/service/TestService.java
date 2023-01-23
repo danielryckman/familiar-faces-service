@@ -2,9 +2,11 @@ package com.example.todo.service;
 
 import com.example.todo.dto.TestDTO;
 import com.example.todo.entity.Test;
+import com.example.todo.entity.User;
 import com.example.todo.entity.Question;
 import com.example.todo.repository.TestsRepository;
 import com.example.todo.repository.QuestionsRepository;
+import com.example.todo.repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,11 +25,13 @@ public class TestService {
 
     private TestsRepository testsRepository;
     private QuestionsRepository questionsRepository;
+    private UsersRepository usersRepository;
     private Random random;
 
-    public TestService(TestsRepository testsRepository, QuestionsRepository questionsRepository) {
+    public TestService(TestsRepository testsRepository, QuestionsRepository questionsRepository, UsersRepository usersRepository) {
         this.testsRepository = testsRepository;
         this.questionsRepository = questionsRepository;
+        this.usersRepository = usersRepository;
         random = new Random();
     }
 
@@ -58,12 +62,15 @@ public class TestService {
         return testsRepository.save(test);
     }
     
-    public Test saveTest(TestDTO testDTO, Pageable pageable) {
+    public Test saveTest(TestDTO testDTO, Long userid, Pageable pageable) {
+    	Optional<User> userList = usersRepository.findById(userid);
+    	User user = userList.get();
         ModelMapper modelMapper = new ModelMapper();
         Test test = modelMapper.map(testDTO, Test.class);
         int index = random.nextInt(3); 
       	List<Question> questions= newTest(test, index);
     	test.setQuestion(questions);
+    	test.setMyuser(user);
     	return testsRepository.save(test);
     }
     

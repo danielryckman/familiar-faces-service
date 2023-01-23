@@ -17,6 +17,7 @@ public class TaskLinks {
     public static final String DELETE_RANGE = "/tasks/deleterange";
     public static final String TESTS = "/tests";
     public static final String TEST = "/test";
+    public static final String TEST_USER = "/testuser";
     public static final String USERS = "/users";
     public static final String USER = "/user";
     public static final String PHOTOS = "/photos";
@@ -28,6 +29,7 @@ public class TaskLinks {
     public static final String RECORD_USER = "/recorduser";
     public static final String FAMILYMEMBERS = "/familymembers";
     public static final String FAMILYMEMBER = "/familymember";
+    public static final String FAMILYMEMBER_USER = "/familymemberuser";
 
     public TaskLinks(EntityLinks entityLinks) {
         this.entityLinks = entityLinks;

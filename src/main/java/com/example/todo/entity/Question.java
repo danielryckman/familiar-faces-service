@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Getter
@@ -61,6 +62,11 @@ public class Question {
 		 this.category=category;
 		 this.image=image;
 		 this.test=test;
+	}
+	
+    @JsonBackReference
+	public Test getTest(){
+		return test;
 	}
 
 }

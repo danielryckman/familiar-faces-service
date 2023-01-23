@@ -59,17 +59,16 @@ public class TasksController {
         log.info("TasksController: " + taskDTO);
         Page<Task> events = taskService.getTasks(pageable);
         PagedResources<?> resource = pagedResourcesAssembler.toResource(events, resourceAssembler);
-        return ResponseEntity.ok(resource);
+        return ResponseEntity.ok(events.getContent());
     }
 
     @RequestMapping(value = TaskLinks.QUERY_TASK, method=RequestMethod.GET)
-    public @ResponseBody List<Task> queryTasks(@RequestParam(value = "begin", required = true) String begin,@RequestParam(value = "end", required = true) String end, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> queryTasks(@RequestParam(value = "begin", required = true) String begin,@RequestParam(value = "end", required = true) String end, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         long beginTime = Long.parseLong(begin);
         long endTime = Long.parseLong(end);
     	log.info("TasksController query from: " + beginTime + " to " + endTime);
-        List<Task> events = taskService.queryTasks(beginTime, endTime, pageable);
-        //PagedResources<?> resource = pagedResourcesAssembler.toResource(events, resourceAssembler);
-        return events;
+        Page<Task> events = taskService.queryTasks(beginTime, endTime, pageable);
+        return ResponseEntity.ok(events.getContent());
     }
     
     @GetMapping(path = TaskLinks.TASK)
@@ -77,12 +76,7 @@ public class TasksController {
         try {
             log.info("TasksController::: " + taskId);
             Task task = taskService.getTask(taskId);
-            Link selfLink = linkTo(methodOn(TasksController.class).getTask(taskId, pageable, resourceAssembler)).withSelfRel();
-            Link allTasksLink = linkTo(TasksController.class).slash("/tasks").withRel("all tasks");
-
-            Resource<Task> taskResource = new Resource<>(task);
-            taskResource.add(selfLink, allTasksLink);
-            return ResponseEntity.ok(taskResource);
+            return ResponseEntity.ok(task);
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);
@@ -93,23 +87,14 @@ public class TasksController {
     public ResponseEntity<?> createTaskForUser(@RequestBody TaskDTO taskDTO, @RequestParam(value = "userid", required = true) Long userid,Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + taskDTO);
         Task events = taskService.saveTask(userid, taskDTO);
-        if(events !=null){
-        Resource<Task> taskResource = new Resource<>(events);
-        HttpHeaders responseHeaders = new HttpHeaders();
-            return new ResponseEntity<Resource<Task>>(taskResource, responseHeaders, HttpStatus.CREATED);
-        }else{
-        	return ResponseEntity.ok(null);
-        }
+        return ResponseEntity.ok(events);
     }
 
     @PostMapping(path = TaskLinks.CREATE_TASK)
     public ResponseEntity<?> createTask(@RequestBody TaskDTO taskDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + taskDTO);
         Task events = taskService.saveTask(taskDTO);
-
-        Resource<Task> taskResource = new Resource<>(events);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        return new ResponseEntity<Resource<Task>>(taskResource, responseHeaders, HttpStatus.CREATED);
+        return ResponseEntity.ok(events);
     }
 
     @RequestMapping(value = TaskLinks.TASK, method=RequestMethod.DELETE)
@@ -117,8 +102,6 @@ public class TasksController {
         try {
             log.info("TasksController::: " + taskId);
             taskService.deleteTask(taskId);
-            Link selfLink = linkTo(methodOn(TasksController.class).getTask(taskId, pageable, resourceAssembler)).withSelfRel();
-            Link allTasksLink = linkTo(TasksController.class).slash("/tasks").withRel("all tasks");
             return ResponseEntity.ok(null);
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
@@ -144,34 +127,20 @@ public class TasksController {
     public ResponseEntity<?> getTests(TestDTO testDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TestsController: " + testDTO);
         Page<Test> events = testService.getTests(pageable);
-        PagedResources<?> resource = pagedResourcesAssembler.toResource(events, resourceAssembler);
-        return ResponseEntity.ok(resource);
-    }
-    
-    @GetMapping(path = TaskLinks.TEST)
-    public ResponseEntity<?> createTest(Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        Test events = testService.createTest(pageable);
-        Resource<Test> testResource = new Resource<>(events);
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("MyResponseHeader", "MyValue");
-        return new ResponseEntity<Resource<Test>>(testResource, responseHeaders, HttpStatus.CREATED);
+        return ResponseEntity.ok(events.getContent());
     }
     
     @PostMapping(path = TaskLinks.TEST)
-    public ResponseEntity<?> createTest(@RequestBody TestDTO testDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> createTest(Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        Test events = testService.createTest(pageable);
+        return ResponseEntity.ok(events);
+    }
+    
+    @PostMapping(path = TaskLinks.TEST_USER)
+    public ResponseEntity<?> createTestForUser(@RequestBody TestDTO testDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + testDTO);
-        Test events = testService.saveTest(testDTO, pageable);
-
-        //Link selfLink = linkTo(methodOn(TasksController.class).createTest(testDTO, pageable, resourceAssembler)).withSelfRel();
-        //Link allTestsLink = linkTo(TasksController.class).slash("/tests").withRel("all tests");
-
-        Resource<Test> testResource = new Resource<>(events);
-        //testResource.add(selfLink,  allTestsLink);
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        //responseHeaders.set("MyResponseHeader", "MyValue");
-        return new ResponseEntity<Resource<Test>>(testResource, responseHeaders, HttpStatus.CREATED);
+        Test events = testService.saveTest(testDTO, userid, pageable);
+        return ResponseEntity.ok(events);
     }
 
     /**-------------------------- users ----------------**/
@@ -179,24 +148,14 @@ public class TasksController {
     public ResponseEntity<?> getUsers(UserDTO userDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + userDTO);
         Page<User> events = userService.getUsers(pageable);
-        PagedResources<?> resource = pagedResourcesAssembler.toResource(events, resourceAssembler);
-        return ResponseEntity.ok(resource);
+        return ResponseEntity.ok(events.getContent());
     }
     
     @PostMapping(path = TaskLinks.USER)
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + userDTO);
         User events = userService.saveUser(userDTO, pageable);
-
-        //Link selfLink = linkTo(methodOn(TasksController.class).createUser(userDTO, pageable, resourceAssembler)).withSelfRel();
-        //Link allTestsLink = linkTo(TasksController.class).slash("/users").withRel("all users");
-
-        Resource<User> userResource = new Resource<>(events);
-        //userResource.add(selfLink,  allTestsLink);
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-        //responseHeaders.set("MyResponseHeader", "MyValue");
-        return new ResponseEntity<Resource<User>>(userResource, responseHeaders, HttpStatus.CREATED);
+        return ResponseEntity.ok(events);
     }
     
     /**-------------------------- family members ----------------**/
@@ -204,21 +163,14 @@ public class TasksController {
     public ResponseEntity<?> getFamilymembers(FamilymemberDTO familymemberDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + familymemberDTO);
         Page<Familymember> events = familymemberService.getFamilymembers(pageable);
-        PagedResources<?> resource = pagedResourcesAssembler.toResource(events, resourceAssembler);
-        return ResponseEntity.ok(resource);
+        return ResponseEntity.ok(events.getContent());
     }
     
-    @PostMapping(path = TaskLinks.FAMILYMEMBER)
-    public ResponseEntity<?> createFamilymember(@RequestBody FamilymemberDTO familymemberDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    @PostMapping(path = TaskLinks.FAMILYMEMBER_USER)
+    public ResponseEntity<?> createFamilymemberForUser(@RequestBody FamilymemberDTO familymemberDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + familymemberDTO);
         Familymember events = familymemberService.saveFamilymember(familymemberDTO, userid, pageable);
-        if(events !=null){
-        Resource<Familymember> familymemberResource = new Resource<>(events);
-        HttpHeaders responseHeaders = new HttpHeaders();
-            return new ResponseEntity<Resource<Familymember>>(familymemberResource, responseHeaders, HttpStatus.CREATED);
-        }else{
-        	return ResponseEntity.ok(null);
-        }
+        return ResponseEntity.ok(events);
     }
 
     /**-------------------------- photos ----------------**/
@@ -226,21 +178,14 @@ public class TasksController {
     public ResponseEntity<?> getPhotos(PhotoDTO photoDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + photoDTO);
         Page<Photo> events = photoService.getPhotos(pageable);
-        PagedResources<?> resource = pagedResourcesAssembler.toResource(events, resourceAssembler);
-        return ResponseEntity.ok(resource);
+        return ResponseEntity.ok(events.getContent());
     }
     
     @PostMapping(path = TaskLinks.PHOTO)
     public ResponseEntity<?> createPhoto(@RequestBody PhotoDTO photoDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + photoDTO);
         Photo events = photoService.savePhoto(photoDTO, userid, pageable);
-        if(events !=null){
-        Resource<Photo> photoResource = new Resource<>(events);
-        HttpHeaders responseHeaders = new HttpHeaders();
-            return new ResponseEntity<Resource<Photo>>(photoResource, responseHeaders, HttpStatus.CREATED);
-        }else{
-        	return ResponseEntity.ok(null);
-        }
+        return ResponseEntity.ok(events);
     }
     
     @GetMapping(path = TaskLinks.PHOTO_RANGE)
@@ -250,8 +195,7 @@ public class TasksController {
             long endTime = Long.parseLong(end);
         	log.info("TasksController query from: " + beginTime + " to " + endTime);
             Page<Photo> events = photoService.getPhotoRange(beginTime, endTime, userid, pageable);
-            PagedResources<?> resource = pagedResourcesAssembler.toResource(events, resourceAssembler);
-            return ResponseEntity.ok(resource);
+            return ResponseEntity.ok(events.getContent());
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);

@@ -8,6 +8,7 @@ import com.example.todo.entity.User;
 import com.example.todo.entity.Familymember;
 import com.example.todo.entity.Task;
 import com.example.todo.entity.Record;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Data
@@ -60,5 +61,10 @@ public class Photo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "myrecord", referencedColumnName = "id", nullable=true)
     private Record myrecord;
+    
+    @JsonBackReference
+    public User getMyuser(){
+    	return myuser;
+    }
     
 }

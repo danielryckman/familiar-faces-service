@@ -44,7 +44,39 @@ public class TaskService {
         }
     }
     
-    public List<Task> queryTasks(long beginTime, long endTime, Pageable pageable) {
+    /*private boolean isTaskToday(long beginTime, long endTime, long schedule, int repeat){
+    	if(schedule > endTime){
+    		return false;
+    	}
+    	if(schedule < endTime && schedule > startTime){
+    		return true;
+    	}
+    	if(schedule < startTime){
+    		if(repeat ==0){
+    			return false;
+    		}
+    		//daily
+    		int repeatUnit =86400;
+    		//repeat weekly
+    		if(repeat ==2){
+    			Calendar cal = Calendar.getInstance();
+    			int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+
+    			String dayOfMonthStr = String.valueOf(dayOfMonth);
+    			repeatUnit = 604800;
+    		}else if(repeat == 3)
+    			repeatUnit =
+    	}
+    	if ( ( currentSystemTime - 86400) >= (eventSystemTime - eventSystemTime mod 86400) ) {
+    		// we are on the day after the event or later, so move the event forward to next week
+    		eventSystemTime += repetitionFrequency
+    		}
+    		else if (currentSystemTime >= (eventSystemTime - eventSystemTime mod 86400) ) {
+    		// we are on the same day as the event... do event stuff
+    		}
+    }*/
+    
+    public Page<Task> queryTasks(long beginTime, long endTime, Pageable pageable) {
         Page<Task> allTasks = tasksRepository.findAll(pageable);
         List<Task> selectedTasks = new ArrayList<>();
         for(Task task : allTasks){
@@ -52,7 +84,7 @@ public class TaskService {
         		selectedTasks.add(task);
         	}
         }
-        return selectedTasks;
+        return new PageImpl<>(selectedTasks, pageable, selectedTasks.size());
     }
     
     public Task getTask(Long taskId) {

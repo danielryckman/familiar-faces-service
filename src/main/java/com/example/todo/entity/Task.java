@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Data
@@ -46,5 +47,9 @@ public class Task {
     @JoinColumn(name = "myuser", referencedColumnName = "id", nullable=true)
     private User myuser;
 
+    @JsonBackReference
+    public User getMyuser(){
+    	return myuser;
+    }
 
 }
