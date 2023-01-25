@@ -38,7 +38,7 @@ public class TaskServiceTest {
     @BeforeEach
     public void setup() {
 
-        taskService = new TaskService(tasksRepository, null);
+        taskService = new TaskService(tasksRepository, null, null);
         Pageable pageable = PageRequest.of(0, 5, Sort.by(
                 Sort.Order.asc("name"),
                 Sort.Order.desc("id")));

@@ -10,8 +10,8 @@ public class TestDTO {
 
     private long id;
     private String name;
-    private String endtime;
-    private String starttime;
+    private Long endtime;
+    private Long starttime;
     private Set<QuestionDTO> questions;
     private String score;
     private String subscores;

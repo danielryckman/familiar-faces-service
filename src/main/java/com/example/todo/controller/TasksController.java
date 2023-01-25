@@ -122,6 +122,13 @@ public class TasksController {
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);
         }
     }
+    
+    @PutMapping(path = TaskLinks.TASK)
+    public ResponseEntity<?> updateTask(@RequestBody TaskDTO taskDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: updating " + taskDTO);
+        Task events = taskService.updateTask(taskDTO, pageable);
+        return ResponseEntity.ok(events);
+    }
    /**-------------------------- tests ----------------**/
     @GetMapping(path = TaskLinks.TESTS)
     public ResponseEntity<?> getTests(TestDTO testDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
@@ -142,6 +149,13 @@ public class TasksController {
         Test events = testService.saveTest(testDTO, userid, pageable);
         return ResponseEntity.ok(events);
     }
+    
+    @PutMapping(path = TaskLinks.TEST)
+    public ResponseEntity<?> updateTest(@RequestBody TestDTO testDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: updating " + testDTO);
+        Test events = testService.updateTest(testDTO, pageable);
+        return ResponseEntity.ok(events);
+    }
 
     /**-------------------------- users ----------------**/
     @GetMapping(path = TaskLinks.USERS)
@@ -155,6 +169,13 @@ public class TasksController {
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: " + userDTO);
         User events = userService.saveUser(userDTO, pageable);
+        return ResponseEntity.ok(events);
+    }
+    
+    @PutMapping(path = TaskLinks.USER)
+    public ResponseEntity<?> updateUser(@RequestBody UserDTO userDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: updating " + userDTO);
+        User events = userService.updateUser(userDTO, pageable);
         return ResponseEntity.ok(events);
     }
     

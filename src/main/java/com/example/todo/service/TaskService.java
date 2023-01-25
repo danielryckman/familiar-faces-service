@@ -5,6 +5,8 @@ import com.example.todo.entity.Task;
 import com.example.todo.repository.TasksRepository;
 import com.example.todo.entity.User;
 import com.example.todo.repository.UsersRepository;
+import com.example.todo.entity.Photo;
+import com.example.todo.repository.PhotosRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -25,10 +27,12 @@ public class TaskService {
 
     private TasksRepository tasksRepository;
     private UsersRepository usersRepository;
+    private PhotosRepository photosRepository;
 
-    public TaskService(TasksRepository tasksRepository, UsersRepository usersRepository) {
+    public TaskService(TasksRepository tasksRepository, UsersRepository usersRepository, PhotosRepository photosRepository) {
         this.tasksRepository = tasksRepository;
         this.usersRepository = usersRepository;
+        this.photosRepository = photosRepository;
     }  
 
     public Page<Task> getTasks(Pageable pageable) {
@@ -112,9 +116,19 @@ public class TaskService {
     	log.info("Task is saved for user: " + user.getFirstname());
         ModelMapper modelMapper = new ModelMapper();
         Task task = modelMapper.map(taskDTO, Task.class);
+        Photo photo = new Photo();
+        photo.setDescription(task.getDescription());
+        photo.setName(user.getFirstname() + "-" +user.getLastname() + "-" + task.getDescription());
+        photo.setDatecreated(System.currentTimeMillis());
+        photo.setDatetoshow(task.getSchedule());
         StableDiffusionService sdService = new StableDiffusionService();
         String image = sdService.newImage(task.getDescription(), 5);
         task.setImage(image);
+        photo.setImage(image);
+        //photo.setTask(task);
+        photo.setMyuser(user);
+        //photosRepository.save(photo);
+        task.getPhotos().add(photo);
         byte[] decoded = Base64.getDecoder().decode(image);
         File outputFile =new File("/tmp/output.jpg");
         try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
@@ -123,6 +137,21 @@ public class TaskService {
         	log.info("Error writing the image to local file: " + ex.getMessage());
         }
         task.setMyuser(user);
+        return tasksRepository.save(task);
+    }
+    
+    public Task updateTask(TaskDTO taskDTO, Pageable pageable) {
+        ModelMapper modelMapper = new ModelMapper();
+        Task task = getTask(taskDTO.getId());
+        if(task != null){
+        	task.setName(taskDTO.getName());
+        	task.setDescription(taskDTO.getDescription());
+        	task.setUrl(taskDTO.getUrl());
+        	task.setSchedule(taskDTO.getSchedule());
+        	task.setRepeat(taskDTO.getRepeat());
+        	task.setRepeatstart(taskDTO.getRepeatstart());
+        	task.setRepeatend(taskDTO.getRepeatend());
+        }
         return tasksRepository.save(task);
     }
 }

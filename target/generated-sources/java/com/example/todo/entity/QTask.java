@@ -32,6 +32,8 @@ public class QTask extends EntityPathBase<Task> {
 
     public final StringPath name = createString("name");
 
+    public final SetPath<Photo, QPhoto> photos = this.<Photo, QPhoto>createSet("photos", Photo.class, QPhoto.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> repeat = createNumber("repeat", Integer.class);
 
     public final NumberPath<Long> repeatend = createNumber("repeatend", Long.class);

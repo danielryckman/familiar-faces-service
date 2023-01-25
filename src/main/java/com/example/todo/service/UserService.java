@@ -44,5 +44,21 @@ public class UserService {
         ModelMapper modelMapper = new ModelMapper();
         User user = modelMapper.map(userDTO, User.class);
         return usersRepository.save(user);
-    }    
+    }
+    
+    public User updateUser(UserDTO userDTO, Pageable pageable) {
+        ModelMapper modelMapper = new ModelMapper();
+        User user = getUser(userDTO.getId());
+        if(user != null){
+        	user.setFirstname(userDTO.getFirstname());
+        	user.setLastname(userDTO.getLastname());
+        	user.setDob(userDTO.getDob());
+        	user.setGender(userDTO.getGender());
+        	user.setHobbies(userDTO.getHobbies());
+        	user.setNickname(userDTO.getNickname());
+        }
+        return usersRepository.save(user);
+    }
 }
+
+

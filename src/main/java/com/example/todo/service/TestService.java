@@ -67,6 +67,7 @@ public class TestService {
     	User user = userList.get();
         ModelMapper modelMapper = new ModelMapper();
         Test test = modelMapper.map(testDTO, Test.class);
+        testsRepository.save(test);
         int index = random.nextInt(3); 
       	List<Question> questions= newTest(test, index);
     	test.setQuestion(questions);
@@ -89,5 +90,18 @@ public class TestService {
     	questionList.add(relationshipQuestion);
     	questionList.add(memoryQuestion);
     	return questionList;
+    }
+    
+    public Test updateTest(TestDTO testDTO, Pageable pageable) {
+        ModelMapper modelMapper = new ModelMapper();
+        Test test = getTest(testDTO.getId());
+        if(test != null){
+        	test.setName(testDTO.getName());
+        	test.setStarttime(testDTO.getStarttime());
+        	test.setEndtime(testDTO.getEndtime());
+        	test.setScore(testDTO.getScore());
+        	test.setSubscores(testDTO.getSubscores());
+        }
+        return testsRepository.save(test);
     }
 }
