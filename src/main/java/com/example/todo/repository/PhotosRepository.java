@@ -25,6 +25,10 @@ public interface PhotosRepository extends JpaRepository<Photo, Long>, JpaSpecifi
     Page<Photo> findByNameIn(
             @Param("name") Collection<String> names, Pageable pageable);
 
+    @Query(name="Question.findByName",
+            nativeQuery = true)
+    List<Photo> findByName(@Param("name") String name);
+    
     @Query(name="Question.findByDescription",
             nativeQuery = true)
     List<Photo> findByDescription(@Param("description") String description);

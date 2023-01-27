@@ -44,9 +44,13 @@ public class QPhoto extends EntityPathBase<Photo> {
 
     public final StringPath name = createString("name");
 
+    public final StringPath personinpic = createString("personinpic");
+
     public final StringPath ptype = createString("ptype");
 
     public final QTask task;
+
+    public final StringPath title = createString("title");
 
     public QPhoto(String variable) {
         this(Photo.class, forVariable(variable), INITS);

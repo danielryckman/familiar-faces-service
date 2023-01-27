@@ -37,6 +37,7 @@ com/example/todo/dto/TaskDTO.class
 com/example/todo/repository/RecordsRepository.class
 com/example/todo/dto/TestDTO.class
 com/example/todo/entity/QPhoto.class
+com/example/todo/service/RecordService$1.class
 com/example/todo/entity/QUser.class
 com/example/todo/entity/Question.class
 com/example/todo/service/TestService.class

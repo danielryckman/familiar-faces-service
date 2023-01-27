@@ -22,6 +22,8 @@ public class QFamilymember extends EntityPathBase<Familymember> {
 
     public static final QFamilymember familymember = new QFamilymember("familymember");
 
+    public final StringPath description = createString("description");
+
     public final StringPath dob = createString("dob");
 
     public final StringPath firstname = createString("firstname");

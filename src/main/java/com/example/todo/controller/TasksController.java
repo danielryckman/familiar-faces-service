@@ -5,9 +5,11 @@ import com.example.todo.dto.TestDTO;
 import com.example.todo.dto.UserDTO;
 import com.example.todo.dto.FamilymemberDTO;
 import com.example.todo.dto.PhotoDTO;
+import com.example.todo.dto.RecordDTO;
 import com.example.todo.entity.Task;
 import com.example.todo.entity.Test;
 import com.example.todo.entity.User;
+import com.example.todo.entity.Record;
 import com.example.todo.entity.Familymember;
 import com.example.todo.entity.Photo;
 import com.example.todo.links.TaskLinks;
@@ -16,6 +18,7 @@ import com.example.todo.service.TestService;
 import com.example.todo.service.UserService;
 import com.example.todo.service.FamilymemberService;
 import com.example.todo.service.PhotoService;
+import com.example.todo.service.RecordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
@@ -53,6 +56,7 @@ public class TasksController {
     private final UserService userService;
     private final FamilymemberService familymemberService;
     private final PhotoService photoService;
+    private final RecordService recordService;
 
     @GetMapping(path = TaskLinks.TASKS)
     public ResponseEntity<?> getTasks(TaskDTO taskDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
@@ -97,11 +101,11 @@ public class TasksController {
         return ResponseEntity.ok(events);
     }
 
-    @RequestMapping(value = TaskLinks.TASK, method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteTask(@PathVariable("id") Long taskId, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    @RequestMapping(value = TaskLinks.CREATE_TASK, method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteTask(@RequestParam("name") String taskname, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
-            log.info("TasksController::: " + taskId);
-            taskService.deleteTask(taskId);
+            log.info("TasksController::: " + taskname);
+            taskService.deleteTask(taskname);
             return ResponseEntity.ok(null);
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
@@ -123,7 +127,7 @@ public class TasksController {
         }
     }
     
-    @PutMapping(path = TaskLinks.TASK)
+    @PutMapping(path = TaskLinks.CREATE_TASK)
     public ResponseEntity<?> updateTask(@RequestBody TaskDTO taskDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: updating " + taskDTO);
         Task events = taskService.updateTask(taskDTO, pageable);
@@ -222,5 +226,55 @@ public class TasksController {
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);
         }
     }
+    
+    @PutMapping(path = TaskLinks.PHOTO)
+    public ResponseEntity<?> updatePhoto(@RequestBody PhotoDTO photoDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: updating " + photoDTO);
+        Photo events = photoService.updatePhoto(photoDTO, pageable);
+        return ResponseEntity.ok(events);
+    }
+    
+    @RequestMapping(value = TaskLinks.PHOTO, method=RequestMethod.DELETE)
+    public ResponseEntity<?> deletePhoto(@RequestParam(value = "name", required = true) String name,Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        try {
+            log.info("TasksController delete photo: " + name);
+            photoService.deletePhoto(name, pageable);
+            return ResponseEntity.ok(null);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Resource Not Found", exc);
+        }
+    }
 
+    /**-------------------------- records ----------------**/
+    @GetMapping(path = TaskLinks.RECORDS)
+    public ResponseEntity<?> getRecords(RecordDTO recordDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: " + recordDTO);
+        Page<Record> events = recordService.getRecords(pageable);
+        return ResponseEntity.ok(events.getContent());
+    }
+    
+    
+    @GetMapping(path = TaskLinks.RECORD_RANGE)
+    public ResponseEntity<?> getRecords(@RequestParam(value = "begin", required = true) String begin,@RequestParam(value = "end", required = true) String end, @RequestParam(value = "userid", required = true) Long userid,Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        long beginTime = Long.parseLong(begin);
+        long endTime = Long.parseLong(end);
+        Page<Record> events = recordService.getRecordRange(beginTime, endTime, userid, pageable);
+        return ResponseEntity.ok(events.getContent());
+    }
+    
+    @PostMapping(path = TaskLinks.RECORD)
+    public ResponseEntity<?> createRecord(@RequestBody RecordDTO recordDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: " + recordDTO);
+        Record events = recordService.saveRecord(recordDTO, userid, pageable);
+        return ResponseEntity.ok(events);
+    }
+    
+    @PutMapping(path = TaskLinks.RECORD)
+    public ResponseEntity<?> updateRecord(@RequestBody RecordDTO recordDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: updating " + recordDTO);
+        Record events = recordService.updateRecord(recordDTO, pageable);
+        return ResponseEntity.ok(events);
+    }
+    
 }

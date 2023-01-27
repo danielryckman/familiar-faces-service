@@ -34,7 +34,7 @@ public class QTest extends EntityPathBase<Test> {
 
     public final SetPath<Question, QQuestion> question = this.<Question, QQuestion>createSet("question", Question.class, QQuestion.class, PathInits.DIRECT2);
 
-    public final StringPath score = createString("score");
+    public final NumberPath<Integer> score = createNumber("score", Integer.class);
 
     public final NumberPath<Long> starttime = createNumber("starttime", Long.class);
 

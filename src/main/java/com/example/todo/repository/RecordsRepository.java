@@ -24,7 +24,7 @@ public interface RecordsRepository extends JpaRepository<Record, Long>, JpaSpeci
 
     @Query(name="Record.findByRdate",
             nativeQuery = true)
-    List<Record> findByRdate(@Param("date") String rdate);
+    List<Record> findByRdate(@Param("date") long rdate);
 
     Page<Record> findAll(Pageable pageable);
 

@@ -14,6 +14,8 @@ public class FamilymemberDTO {
     private String firstname;
     private String lastname;
     private String nickname;
+    private String description;
+    private String relationship;
     private String dob;
     private String gender;
     private String hobbies;

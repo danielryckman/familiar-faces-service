@@ -12,10 +12,13 @@ import java.util.Set;
 public class RecordDTO {
 
     private long id;
-    private String date;
+    private long rdate;
     private long apptime;
     private long phototime;
     private long testtime;
+    private int testnumber;
+    private int averagescore;
+    private int commentnumber;
     private UserDTO user;
     private Set<PhotoDTO> photo;
     private Set<TestDTO> tests;

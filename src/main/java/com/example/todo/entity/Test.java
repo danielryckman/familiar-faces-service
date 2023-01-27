@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class Test {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
-    //@NotNull(message="{NotNull.Test.id}")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
@@ -37,7 +36,7 @@ public class Test {
     private Set<Question> question=new HashSet<>();
     
     @Column(nullable = true)
-    private String score;
+    private int score;
     
     @Column(nullable = true)
     private String subscores;

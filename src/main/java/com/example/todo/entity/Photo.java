@@ -27,6 +27,12 @@ public class Photo {
     private String description;
     
     @Column(nullable = true)
+    private String title;
+    
+    @Column(nullable = true)
+    private String personinpic;
+    
+    @Column(nullable = true)
     private long datetoshow;
     
     @Column(nullable = true)
@@ -67,4 +73,18 @@ public class Photo {
     	return myuser;
     }
     
+    @JsonBackReference
+    public Record getMyrecord(){
+    	return myrecord;
+    }
+    
+    @JsonBackReference
+    public Task getTask(){
+    	return task;
+    }
+    
+    @JsonBackReference
+    public Familymember getFamilymember(){
+    	return familymember;
+    }
 }

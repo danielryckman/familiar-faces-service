@@ -4,6 +4,7 @@ import com.example.todo.dto.TaskDTO;
 import com.example.todo.entity.Task;
 import com.example.todo.repository.TasksRepository;
 import com.example.todo.entity.User;
+import com.example.todo.entity.Familymember;
 import com.example.todo.repository.UsersRepository;
 import com.example.todo.entity.Photo;
 import com.example.todo.repository.PhotosRepository;
@@ -20,6 +21,8 @@ import java.util.Base64;
 import java.io.File;
 import java.io.FileOutputStream;
 import javax.imageio.ImageIO;
+import java.util.Date;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -28,7 +31,7 @@ public class TaskService {
     private TasksRepository tasksRepository;
     private UsersRepository usersRepository;
     private PhotosRepository photosRepository;
-
+    
     public TaskService(TasksRepository tasksRepository, UsersRepository usersRepository, PhotosRepository photosRepository) {
         this.tasksRepository = tasksRepository;
         this.usersRepository = usersRepository;
@@ -96,9 +99,12 @@ public class TaskService {
         return task.get();
     }
     
-    public void deleteTask(Long taskId) {
-    	Task task = getTask(taskId);
-    	tasksRepository.delete(task);
+    public void deleteTask(String taskname) {
+    	List<Task> task = tasksRepository.findByName(taskname);
+    	for (Photo photo : task.get(0).getPhotos()){
+    		photosRepository.delete(photo);
+    	}
+    	tasksRepository.delete(task.get(0));
     }
 
     public Task saveTask(TaskDTO taskDTO) {
@@ -110,6 +116,22 @@ public class TaskService {
         return tasksRepository.save(task);
     }
     
+    private String getPartOfDay(long time) {
+        Date dt = new Date(time);
+        int hours = dt.getHours();
+        int min = dt.getMinutes();
+
+        if(hours>=1 || hours<=12){
+            return "this morning";
+        }else if(hours>=12 || hours<=16){
+            return "this afternoon";
+        }else if(hours>=16 || hours<=21){
+            return "this evening";
+        }else{
+            return "tonight";
+        }
+    }
+    
     public Task saveTask(Long userId, TaskDTO taskDTO) {  	
     	Optional<User> userList = usersRepository.findById(userId);
     	User user = userList.get();
@@ -118,11 +140,24 @@ public class TaskService {
         Task task = modelMapper.map(taskDTO, Task.class);
         Photo photo = new Photo();
         photo.setDescription(task.getDescription());
-        photo.setName(user.getFirstname() + "-" +user.getLastname() + "-" + task.getDescription());
+        photo.setName(task.getName());
         photo.setDatecreated(System.currentTimeMillis());
         photo.setDatetoshow(task.getSchedule());
-        StableDiffusionService sdService = new StableDiffusionService();
-        String image = sdService.newImage(task.getDescription(), 5);
+        photo.setPtype("auto");
+        String prompt = task.getDescription();
+        photo.setTitle(task.getDescription());
+        Set<Familymember> familymembers = user.getFamilymembers();
+        for(Familymember familymember : familymembers){
+        	if(task.getDescription().toLowerCase().contains(familymember.getFirstname().toLowerCase())){
+        		photo.setPersoninpic("Your " + familymember.getRelationship() + " " + familymember.getFirstname() + "(" + familymember.getNickname()+ ")");
+        		photo.setTitle(task.getDescription() + " " + getPartOfDay(task.getSchedule()));
+        		String fullname = familymember.getFirstname() +familymember.getLastname();
+        		prompt = "a photo of " +familymember.getDescription() +" "+ task.getDescription().replaceAll(familymember.getFirstname(),fullname.toLowerCase()) ;
+        		break;
+        	}
+        }        
+        StableDiffusionService sdService = new StableDiffusionService();        
+        String image = sdService.newImage(prompt, 20);
         task.setImage(image);
         photo.setImage(image);
         //photo.setTask(task);

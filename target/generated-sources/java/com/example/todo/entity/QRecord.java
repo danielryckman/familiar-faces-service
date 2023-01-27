@@ -24,6 +24,10 @@ public class QRecord extends EntityPathBase<Record> {
 
     public final NumberPath<Long> apptime = createNumber("apptime", Long.class);
 
+    public final NumberPath<Integer> averagescore = createNumber("averagescore", Integer.class);
+
+    public final NumberPath<Integer> commentnumber = createNumber("commentnumber", Integer.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QUser myuser;
@@ -32,7 +36,9 @@ public class QRecord extends EntityPathBase<Record> {
 
     public final NumberPath<Long> phototime = createNumber("phototime", Long.class);
 
-    public final StringPath rdate = createString("rdate");
+    public final NumberPath<Long> rdate = createNumber("rdate", Long.class);
+
+    public final NumberPath<Integer> testnumber = createNumber("testnumber", Integer.class);
 
     public final SetPath<Test, QTest> tests = this.<Test, QTest>createSet("tests", Test.class, QTest.class, PathInits.DIRECT2);
 

@@ -38,6 +38,11 @@ public class PhotoService {
         return photo.get();
     }
     
+    public void deletePhoto(String name, Pageable pageable) {
+    	List<Photo> photo = photosRepository.findByName(name);
+    	photosRepository.delete(photo.get(0));
+    }
+    
     public void deletePhoto(long photoId) {
     	Photo photo = getPhoto(photoId);
     	photosRepository.delete(photo);
@@ -62,6 +67,22 @@ public class PhotoService {
         }
         Page<Photo> page = new PageImpl<>(returnPhotos, pageable, returnPhotos.size());
         return page;
+    }
+    
+    public Photo updatePhoto(PhotoDTO photoDTO, Pageable pageable) {
+        ModelMapper modelMapper = new ModelMapper();
+        Photo photo = getPhoto(photoDTO.getId());
+        if(photo != null){
+        	photo.setName(photoDTO.getName());
+        	photo.setDescription(photoDTO.getDescription());
+        	photo.setTitle(photoDTO.getTitle());
+        	photo.setPersoninpic(photoDTO.getPersoninpic());
+        	photo.setDatetoshow(photoDTO.getDatetoshow());
+        	photo.setDatecreated(photoDTO.getDatecreated());
+        	photo.setDatelastviewed(photoDTO.getDatelastviewed());
+        	photo.setComment(photoDTO.getComment());    	
+        }
+        return photosRepository.save(photo);
     }
     
 }

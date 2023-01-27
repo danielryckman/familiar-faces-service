@@ -27,6 +27,7 @@ public class TaskLinks {
     public static final String RECORDS = "/records";
     public static final String RECORD = "/record";
     public static final String RECORD_USER = "/recorduser";
+    public static final String RECORD_RANGE = "/recordrange";
     public static final String FAMILYMEMBERS = "/familymembers";
     public static final String FAMILYMEMBER = "/familymember";
     public static final String FAMILYMEMBER_USER = "/familymemberuser";

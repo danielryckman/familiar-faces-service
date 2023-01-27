@@ -32,6 +32,9 @@ public class Familymember {
     @NotNull(message="{NotNull.Familymember.lastname}")
     private String lastname; 
     
+    @Column(nullable = true)
+    private String description;
+
     @Column
     @NotNull(message="{NotNull.Familymember.dob}")
     private String dob;

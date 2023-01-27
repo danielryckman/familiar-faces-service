@@ -20,20 +20,28 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.json.simple.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Base64;
 
 @Slf4j
 public class StableDiffusionService {
 	
-	private RestTemplate restTemplate;
-	
-	private String newImageUrl = "http://192.168.4.171:7860/sdapi/v1/txt2img";
+	private RestTemplate restTemplate;	
+	private String newImageUrl = "http://192.168.4.171:7861/sdapi/v1/txt2img";
+	private String negativePrompt ="cartoon, 3d, {(disfigured)},{(bad art)},{(deformed)},{(poorly drawn)},{(extra limbs)},{(close up)},{(b&w)},{(weird colors)}, blurry";
 	
 	public String newImage(String prompt, int steps) {
 		restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.add("Authorization", "Basic ZmFtaWxpYXJmYWNlc2FwaToxMjE5OGMwZS05ZDI2LTExZWQtYjM2Ny05MzdmZjgwZTM2YTI=");
 	    JSONObject jsonObject = new JSONObject();
 	    jsonObject.put("prompt", prompt);
+	    jsonObject.put("negative_prompt", negativePrompt);
+	    if(prompt.contains("danielryckman")){
+	    	jsonObject.put("restore_faces", false);
+	    }else{
+	    	jsonObject.put("restore_faces", true);
+	    }
 	    jsonObject.put("steps", steps);
 		HttpEntity<String> request = 
 			      new HttpEntity<String>(jsonObject.toString(), headers);
@@ -47,6 +55,19 @@ public class StableDiffusionService {
 		}
 		return "";
 	}
+	
+	/*public void login() {
+		restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    JSONObject jsonObject = new JSONObject();
+	    jsonObject.put("username", "ling");
+	    jsonObject.put("password", "stablediffusion");
+		HttpEntity<String> request = 
+			      new HttpEntity<String>(jsonObject.toString(), headers);
+		String response = restTemplate.postForObject(loginUrl, request, String.class);
+		init = true;
+	}*/
 
     
 }

@@ -13,7 +13,7 @@ public class TestDTO {
     private Long endtime;
     private Long starttime;
     private Set<QuestionDTO> questions;
-    private String score;
+    private int score;
     private String subscores;
     private UserDTO user;
     

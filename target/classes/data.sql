@@ -10,6 +10,7 @@ CREATE TABLE task (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(250) NOT NULL,
   description VARCHAR(250) NOT NULL,
+  prompt VARCHAR(1024) DEFAULT NULL,
   url VARCHAR(1024) DEFAULT NULL,
   schedule BIGINT,
   repeat TINYINT,
@@ -22,7 +23,7 @@ CREATE TABLE task (
 CREATE TABLE test (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(250) DEFAULT NULL,
-  score VARCHAR(250) DEFAULT NULL,
+  score INT,
   subscores VARCHAR(250) DEFAULT NULL,
   myuser VARCHAR(100) DEFAULT NULL,
   myrecord VARCHAR(100) DEFAULT NULL,
@@ -40,16 +41,19 @@ CREATE TABLE question (
   answer VARCHAR(1024) DEFAULT NULL,
   timetoanswer BIGINT DEFAULT NULL,
   category VARCHAR(64) NOT NULL,
-  score VARCHAR(250) DEFAULT NULL,
+  score INT,
   image BLOB
 );
 
 CREATE TABLE records (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  rdate VARCHAR(250) DEFAULT NULL,
+  rdate BIGINT,
   apptime BIGINT,
   phototime BIGINT,
   testtime BIGINT,
+  testnumber INT,
+  averagescore INT,
+  commentnumber INT,
   myuser VARCHAR(250) DEFAULT NULL
 );
 
@@ -70,6 +74,7 @@ CREATE TABLE familymember (
   firstname VARCHAR(64) NOT NULL,
   lastname VARCHAR(64) NOT NULL,
   hobbies VARCHAR(1024) DEFAULT NULL,
+  description VARCHAR(1024) DEFAULT NULL,
   dob VARCHAR(64) NOT NULL,
   gender VARCHAR(64) NOT NULL,
   nickname VARCHAR(64) DEFAULT NULL,
@@ -81,6 +86,8 @@ CREATE TABLE photo (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(250) DEFAULT NULL,
   description VARCHAR(2048) DEFAULT NULL,
+  title VARCHAR(250) DEFAULT NULL,
+  personinpic VARCHAR(250) DEFAULT NULL,
   datetoshow VARCHAR(64) DEFAULT NULL,
   datecreated VARCHAR(64) DEFAULT NULL,
   datelastviewed VARCHAR(64) DEFAULT NULL,

@@ -10,6 +10,8 @@ import com.example.todo.entity.User;
 import com.example.todo.entity.Test;
 import com.example.todo.entity.Photo;
 import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Getter
@@ -24,7 +26,7 @@ public class Record {
     private Long id;
     
     @NotNull(message="{NotNull.Record.rdate}")
-    private String rdate;
+    private long rdate;
     
     @Column(nullable = true)
     private long apptime;
@@ -34,6 +36,15 @@ public class Record {
     
     @Column(nullable = true)
     private long testtime;
+    
+    @Column(nullable = true)
+    private int testnumber;
+    
+    @Column(nullable = true)
+    private int averagescore;
+    
+    @Column(nullable = true)
+    private int commentnumber;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "myuser", referencedColumnName = "id", nullable=true)
@@ -46,5 +57,20 @@ public class Record {
     @Column
     @OneToMany(mappedBy="myrecord",cascade = CascadeType.ALL)
     private Set<Test> tests=new HashSet<>();
+    
+    @JsonBackReference
+    public User getMyuser(){
+    	return myuser;
+    }
+    
+    @JsonManagedReference
+    public Set<Photo> getPhoto(){
+    	return photo;
+    }
+    
+    @JsonManagedReference
+    public Set<Test> getTests(){
+    	return tests;
+    }
     
 }

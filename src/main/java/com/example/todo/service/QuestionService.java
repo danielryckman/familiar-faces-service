@@ -29,7 +29,7 @@ public class QuestionService {
 	
 	public static final String[] RELATIONSHIP_QUESTIONS = {"corkscrew/hammer", "rose/tulip", "watch/ruler"};
 	public static final String[] RELATIONSHIP_HINTS = {"relax", "relax", "relax"};
-	public static final String[] RELATIONSHIP_SOLUTIONS = {"tools", "flower plant", "measure"};
+	public static final String[] RELATIONSHIP_SOLUTIONS = {"tools", "flower, plant", "measure"};
 	
 	public static final String[] MEMORY_QUESTIONS = {"blue/computer/rain", "boots/cute/violet", "phone/rainbow/church"};
 	public static final String[] MEMORY_HINTS = {"relax", "relax", "relax"};

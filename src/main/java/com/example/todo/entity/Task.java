@@ -29,6 +29,9 @@ public class Task {
     private String description;
     
     @Column(nullable = true)
+    private String prompt;
+    
+    @Column(nullable = true)
     private String url;
     
     @Column
