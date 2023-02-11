@@ -26,7 +26,8 @@ import java.util.Base64;
 public class StableDiffusionService {
 	
 	private RestTemplate restTemplate;	
-	private String newImageUrl = "http://47.14.39.133:7861/sdapi/v1/txt2img";
+	//private String newImageUrl = "http://47.14.39.133:7861/sdapi/v1/txt2img";
+	private String newImageUrl = "http://192.168.4.171:7860/sdapi/v1/txt2img";
 	private String negativePrompt ="cartoon, 3d, {(disfigured)},{(bad art)},{(deformed)},{(poorly drawn)},{(extra limbs)},{(close up)},{(b&w)},{(weird colors)}, blurry";
 	
 	public String newImage(String prompt, int steps) {

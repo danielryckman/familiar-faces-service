@@ -34,6 +34,17 @@ public class User {
     @NotNull(message="{NotNull.User.lastname}")
     private String lastname; 
     
+    @Column(nullable = false)
+    @NotNull(message="{NotNull.User.email}")
+    private String email; 
+    
+    @Column(nullable = false)
+    @NotNull(message="{NotNull.Familymember.password}")
+    private String password; 
+    
+    @Column(nullable = true)
+    private String description;
+    
     @Column
     @NotNull(message="{NotNull.User.dob}")
     private String dob;

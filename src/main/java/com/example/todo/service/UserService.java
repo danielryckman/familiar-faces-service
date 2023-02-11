@@ -39,7 +39,12 @@ public class UserService {
     	User user = getUser(userId);
     	usersRepository.delete(user);
     }
-
+    
+    public User getUserByEmail(String email, Pageable pageable) {
+        Optional<User> user = usersRepository.findByEmail(email);
+        return user.isPresent() ? user.get(): null;
+    }
+    
     public User saveUser(UserDTO userDTO, Pageable pageable) {
         ModelMapper modelMapper = new ModelMapper();
         User user = modelMapper.map(userDTO, User.class);

@@ -14,7 +14,10 @@ public class FamilymemberDTO {
     private String firstname;
     private String lastname;
     private String nickname;
+    private String email;
+    private String password;
     private String description;
+    private int isadmin;
     private String relationship;
     private String dob;
     private String gender;
@@ -22,4 +25,5 @@ public class FamilymemberDTO {
     private String songs;
     private Set<PhotoDTO> photo;
     private UserDTO user;
+    private long userid;
 }

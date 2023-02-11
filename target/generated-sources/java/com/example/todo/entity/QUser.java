@@ -20,7 +20,11 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
+    public final StringPath description = createString("description");
+
     public final StringPath dob = createString("dob");
+
+    public final StringPath email = createString("email");
 
     public final SetPath<Familymember, QFamilymember> familymembers = this.<Familymember, QFamilymember>createSet("familymembers", Familymember.class, QFamilymember.class, PathInits.DIRECT2);
 
@@ -35,6 +39,8 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath lastname = createString("lastname");
 
     public final StringPath nickname = createString("nickname");
+
+    public final StringPath password = createString("password");
 
     public final SetPath<Photo, QPhoto> photo = this.<Photo, QPhoto>createSet("photo", Photo.class, QPhoto.class, PathInits.DIRECT2);
 

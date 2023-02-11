@@ -44,6 +44,11 @@ public class FamilymemberService {
         return familymember.isPresent() ? familymember.get(): null;
     }
     
+    public Familymember getFamilymemberByEmail(String email, Pageable pageable) {
+        Optional<Familymember> familymember = familymembersRepository.findByEmail(email);
+        return familymember.isPresent() ? familymember.get(): null;
+    }
+    
     public void deleteFamilymember(long familymemberId) {
     	Familymember familymember = getFamilymember(familymemberId);
     	familymembersRepository.delete(familymember);
@@ -60,6 +65,7 @@ public class FamilymemberService {
         }else{
         	familymember = modelMapper.map(familymemberDTO, Familymember.class);
         	familymember.setMyuser(user);
+        	familymember.setUserid(userId);
         	return familymembersRepository.save(familymember);
         }
     }

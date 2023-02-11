@@ -31,11 +31,18 @@ public interface UsersRepository extends JpaRepository<User, Long>, JpaSpecifica
     Page<User> findByNicknameIn(
             @Param("nickname") Collection<String> names, Pageable pageable);
     
+    Page<User> findByEmailIn(
+            @Param("email") Collection<String> email, Pageable pageable);
+    
     Page<User> findAll(Pageable pageable);
 
     @Query(name="User.findById", nativeQuery = true)
     @RestResource(exported = false)
     Optional<User> findById(@Param("id") long qid);
+
+    @Query(name="User.findByEmail", nativeQuery = true)
+    @RestResource(exported = false)
+    Optional<User> findByEmail(@Param("email") String email);
 
 }
 

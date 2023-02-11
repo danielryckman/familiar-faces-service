@@ -52,6 +52,8 @@ public class QPhoto extends EntityPathBase<Photo> {
 
     public final StringPath title = createString("title");
 
+    public final StringPath uploaddir = createString("uploaddir");
+
     public QPhoto(String variable) {
         this(Photo.class, forVariable(variable), INITS);
     }

@@ -31,10 +31,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.MediaType;
 
 import java.net.URI;
 import java.util.List;
@@ -42,6 +44,7 @@ import java.util.Optional;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.UUID;
+import java.io.IOException;
 
 
 @Slf4j
@@ -183,6 +186,13 @@ public class TasksController {
         return ResponseEntity.ok(events);
     }
     
+    @GetMapping(path = TaskLinks.USER)
+    public ResponseEntity<?> getUserByEmail(@RequestParam(value = "email", required = true) String email, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: get user by " + email);
+        User events = userService.getUserByEmail(email, pageable);
+        return ResponseEntity.ok(events);
+    }
+    
     /**-------------------------- family members ----------------**/
     @GetMapping(path = TaskLinks.FAMILYMEMBERS)
     public ResponseEntity<?> getFamilymembers(FamilymemberDTO familymemberDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
@@ -198,6 +208,12 @@ public class TasksController {
         return ResponseEntity.ok(events);
     }
 
+    @GetMapping(path = TaskLinks.FAMILYMEMBER)
+    public ResponseEntity<?> getFamilymemberByEmail(@RequestParam(value = "email", required = true) String email, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: get family member by " + email);
+        Familymember events = familymemberService.getFamilymemberByEmail(email, pageable);
+        return ResponseEntity.ok(events);
+    }
     /**-------------------------- photos ----------------**/
     @GetMapping(path = TaskLinks.PHOTOS)
     public ResponseEntity<?> getPhotos(PhotoDTO photoDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
@@ -245,7 +261,35 @@ public class TasksController {
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);
         }
     }
+    
+    //@PostMapping(path = TaskLinks.PHOTO_UPLOAD)
+    //@RequestMapping(path = TaskLinks.PHOTO_UPLOAD, method = RequestMethod.POST, consumes = {MediaType.IMAGE_JPEG_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(path = TaskLinks.PHOTO_UPLOAD, method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    public ResponseEntity<?> uploadPhoto(@RequestPart(value = "image", required = true) MultipartFile image,@RequestPart(value = "photo", required = true) PhotoDTO photo, @RequestParam(value = "userid", required = true) Long userid,@RequestParam(value = "album", required = true) String album, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    	try {
+            log.info("TasksController upload photo: " + photo.getName());
+            photoService.uploadPhoto(photo, image, userid, album);
+            return ResponseEntity.ok(null);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, exc.getMessage(), exc);
+        }catch (IOException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Error uploading photo:" + photo.getName(), ex);
+            }
+    }
 
+    @GetMapping(path = TaskLinks.PHOTO_UPLOAD)
+    public ResponseEntity<?> getUploadedPhoto(@RequestParam(value = "userid", required = true) Long userid,@RequestParam(value = "album", required = true) String album, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        try {
+        	log.info("TasksController query all photo in: " + album);
+            Page<Photo> events = photoService.getPhotoFromAlbum(album, userid, pageable);
+            return ResponseEntity.ok(events.getContent());
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Resource Not Found", exc);
+        }
+    }
     /**-------------------------- records ----------------**/
     @GetMapping(path = TaskLinks.RECORDS)
     public ResponseEntity<?> getRecords(RecordDTO recordDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {

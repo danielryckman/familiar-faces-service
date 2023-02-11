@@ -16,6 +16,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.Base64;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.security.InvalidParameterException;
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -83,6 +91,42 @@ public class PhotoService {
         	photo.setComment(photoDTO.getComment());    	
         }
         return photosRepository.save(photo);
+    }
+    
+    public Photo uploadPhoto(PhotoDTO photoDTO, MultipartFile file, Long userid, String album) throws IOException{
+        ModelMapper modelMapper = new ModelMapper();
+        Photo photo = modelMapper.map(photoDTO, Photo.class);
+        Optional<User> userList = usersRepository.findById(userid);
+        User user = userList.get();
+        photo.setMyuser(user);
+        //try{
+        	byte[] decoded = file.getBytes();
+        	String dirPath = "./upload/" + userid+ "/" + album;
+        	Path targetLocation = Paths.get(dirPath + "/" + photoDTO.getName()+".jpg");
+        	Files.createDirectories(Paths.get(dirPath));
+        	String image = Base64.getEncoder().encodeToString(decoded);
+        	photo.setImage(image);
+        	photo.setUploaddir(dirPath);
+        	if(Files.exists(targetLocation)) {
+        		throw new InvalidParameterException("Photo " + photoDTO.getName() + " already exists in the album. Please use another name.");
+        	}
+        	Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+       // }catch(Exception ex){
+        //	log.info("Error writing the image to local file: " + ex.getMessage());
+        //}
+        return photosRepository.save(photo);
+    }
+    
+    public Page<Photo> getPhotoFromAlbum(String album, long userid, Pageable pageable) {
+        Page<Photo> allPhotos = photosRepository.findAll(pageable);
+        List<Photo> returnPhotos = new ArrayList<>();
+        for(Photo photo : allPhotos){
+        	if(photo.getUploaddir().contains("./upload/" +userid +"/" + album)){
+        		returnPhotos.add(photo);
+        	}
+        }
+        Page<Photo> page = new PageImpl<>(returnPhotos, pageable, returnPhotos.size());
+        return page;
     }
     
 }

@@ -48,6 +48,9 @@ public class Photo {
     @Column(nullable = true)
     private String ptype;
     
+    @Column(nullable = true)
+    private String uploaddir;
+    
     @Lob
     @Column(length = 1000000)
     private String image;

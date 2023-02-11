@@ -28,6 +28,9 @@ public interface FamilymembersRepository extends JpaRepository<Familymember, Lon
     Page<Familymember> findByFirstnameIn(
             @Param("firstname") Collection<String> names, Pageable pageable);
 
+    Page<Familymember> findByEmailIn(
+            @Param("email") Collection<String> email, Pageable pageable);
+
     Page<Familymember> findAll(Pageable pageable);
 
     @Query(name="Familymember.findById", nativeQuery = true)
@@ -37,5 +40,10 @@ public interface FamilymembersRepository extends JpaRepository<Familymember, Lon
     @Query(name="Familymember.findByFirstname", nativeQuery = true)
     @RestResource(exported = false)
     Optional<Familymember> findByFirstname(@Param("firstname") String fname);
+
+    @Query(name="Familymember.findByEmail", nativeQuery = true)
+    @RestResource(exported = false)
+    Optional<Familymember> findByEmail(@Param("email") String fname);
 }
+
 

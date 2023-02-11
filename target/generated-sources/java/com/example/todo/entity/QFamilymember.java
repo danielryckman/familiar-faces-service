@@ -26,6 +26,8 @@ public class QFamilymember extends EntityPathBase<Familymember> {
 
     public final StringPath dob = createString("dob");
 
+    public final StringPath email = createString("email");
+
     public final StringPath firstname = createString("firstname");
 
     public final StringPath gender = createString("gender");
@@ -34,15 +36,21 @@ public class QFamilymember extends EntityPathBase<Familymember> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Integer> isAdmin = createNumber("isAdmin", Integer.class);
+
     public final StringPath lastname = createString("lastname");
 
     public final QUser myuser;
 
     public final StringPath nickname = createString("nickname");
 
+    public final StringPath password = createString("password");
+
     public final SetPath<Photo, QPhoto> photo = this.<Photo, QPhoto>createSet("photo", Photo.class, QPhoto.class, PathInits.DIRECT2);
 
     public final StringPath relationship = createString("relationship");
+
+    public final NumberPath<Long> userid = createNumber("userid", Long.class);
 
     public QFamilymember(String variable) {
         this(Familymember.class, forVariable(variable), INITS);

@@ -20,6 +20,7 @@ public class PhotoDTO {
     private String comment;
     private String title;
     private String personinpic;
+    private String uploaddir;
     private UserDTO user;
     private FamilymemberDTO familymember;
     private TaskDTO task;

@@ -32,6 +32,14 @@ public class Familymember {
     @NotNull(message="{NotNull.Familymember.lastname}")
     private String lastname; 
     
+    @Column(nullable = false)
+    @NotNull(message="{NotNull.Familymember.email}")
+    private String email; 
+    
+    @Column(nullable = false)
+    @NotNull(message="{NotNull.Familymember.password}")
+    private String password; 
+    
     @Column(nullable = true)
     private String description;
 
@@ -42,6 +50,13 @@ public class Familymember {
     @Column
     @NotNull(message="{NotNull.Question.gender}")
     private String gender;
+    
+    @Column
+    @NotNull(message="{NotNull.Question.userid}")
+    private long userid;
+    
+    @Column(nullable = true)
+    private int isAdmin;
     
     @Column(nullable = true)
     private String nickname;
@@ -68,4 +83,5 @@ public class Familymember {
     public void setMyuser(User user){
     	myuser =user;
     }
+   
 }
