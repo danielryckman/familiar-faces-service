@@ -68,19 +68,22 @@ public class TestService {
         ModelMapper modelMapper = new ModelMapper();
         Test test = modelMapper.map(testDTO, Test.class);
         testsRepository.save(test);
-        int index = random.nextInt(3); 
-      	List<Question> questions= newTest(test, index);
-    	test.setQuestion(questions);
-    	test.setMyuser(user);
+        int index = random.nextInt(3);
     	return testsRepository.save(test);
     }
     
-    public List<Question> newTest(Test test, int index){
+    public Test addQuestions(long testId, int index){
+    	Optional<Test> testList = testsRepository.findById(testId);
+    	Test test = testList.get();
     	List<Question> questionList = new ArrayList<Question>();
-    	Question generalQuestion = new Question(test.getName(), QuestionService.GENERAL_HINTS[index],QuestionService.GENERAL_QUESTIONS[index],QuestionService.GENERAL_SOLUTIONS[index], "general", null, test);
-    	Question moneyQuestion = new Question(test.getName(), QuestionService.MONEY_HINTS[index],QuestionService.MONEY_QUESTIONS[index],QuestionService.MONEY_SOLUTIONS[index], "money", null, test);
-    	Question relationshipQuestion = new Question(test.getName(), QuestionService.RELATIONSHIP_HINTS[index],QuestionService.RELATIONSHIP_QUESTIONS[index],QuestionService.RELATIONSHIP_SOLUTIONS[index], "relationship", null, test);
-    	Question memoryQuestion = new Question(test.getName(), QuestionService.MEMORY_HINTS[index],QuestionService.MEMORY_QUESTIONS[index],QuestionService.MEMORY_SOLUTIONS[index], "memory", null, test);
+    	Question generalQuestion = new Question(test.getName(), QuestionService.GENERAL_HINTS[index],QuestionService.GENERAL_QUESTIONS[index],QuestionService.GENERAL_SOLUTIONS[index], "general", null);
+    	Question moneyQuestion = new Question(test.getName(), QuestionService.MONEY_HINTS[index],QuestionService.MONEY_QUESTIONS[index],QuestionService.MONEY_SOLUTIONS[index], "money", null);
+    	Question relationshipQuestion = new Question(test.getName(), QuestionService.RELATIONSHIP_HINTS[index],QuestionService.RELATIONSHIP_QUESTIONS[index],QuestionService.RELATIONSHIP_SOLUTIONS[index], "relationship", null);
+    	Question memoryQuestion = new Question(test.getName(), QuestionService.MEMORY_HINTS[index],QuestionService.MEMORY_QUESTIONS[index],QuestionService.MEMORY_SOLUTIONS[index], "memory", null);
+    	generalQuestion.setTest(test);
+    	moneyQuestion.setTest(test);
+    	relationshipQuestion.setTest(test);
+    	memoryQuestion.setTest(test);
     	questionsRepository.save(generalQuestion);
     	questionsRepository.save(moneyQuestion);
     	questionsRepository.save(relationshipQuestion);
@@ -89,7 +92,8 @@ public class TestService {
     	questionList.add(moneyQuestion);
     	questionList.add(relationshipQuestion);
     	questionList.add(memoryQuestion);
-    	return questionList;
+    	test.setQuestion(questionList);
+    	return testsRepository.save(test);
     }
     
     public Test updateTest(TestDTO testDTO, Pageable pageable) {

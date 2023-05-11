@@ -45,6 +45,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.UUID;
 import java.io.IOException;
+import java.util.Random;
 
 
 @Slf4j
@@ -60,6 +61,7 @@ public class TasksController {
     private final FamilymemberService familymemberService;
     private final PhotoService photoService;
     private final RecordService recordService;
+    private Random random = new Random();
 
     @GetMapping(path = TaskLinks.TASKS)
     public ResponseEntity<?> getTasks(TaskDTO taskDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
@@ -152,8 +154,11 @@ public class TasksController {
     
     @PostMapping(path = TaskLinks.TEST_USER)
     public ResponseEntity<?> createTestForUser(@RequestBody TestDTO testDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + testDTO);
-        Test events = testService.saveTest(testDTO, userid, pageable);
+        log.info("TasksController: creating new test for user " + userid +", "+ testDTO);
+        Test test = testService.saveTest(testDTO, userid, pageable);
+        System.out.println("save test " + test.getName() + " with id = " + test.getId());
+        int index = random.nextInt(3);
+        Test events = testService.addQuestions(test.getId(),index);
         return ResponseEntity.ok(events);
     }
     
@@ -282,9 +287,21 @@ public class TasksController {
     @GetMapping(path = TaskLinks.PHOTO_UPLOAD)
     public ResponseEntity<?> getUploadedPhoto(@RequestParam(value = "userid", required = true) Long userid,@RequestParam(value = "album", required = true) String album, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
-        	log.info("TasksController query all photo in: " + album);
+        	log.info("TasksController query all photo in: " + userid+"/" + album);
             Page<Photo> events = photoService.getPhotoFromAlbum(album, userid, pageable);
             return ResponseEntity.ok(events.getContent());
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Resource Not Found", exc);
+        }
+    }
+    
+    @RequestMapping(value = TaskLinks.PHOTO_UPLOAD, method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteUploadedPhoto(@RequestParam(value = "userid", required = true) Long userid,@RequestParam(value = "album", required = true) String album, @RequestParam(value = "photoname", required = true) String photoname, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        try {
+        	log.info("TasksController delete photo " + photoname + " from album " + album);
+            photoService.deletePhotoFromAlbum(album, userid, photoname, pageable);
+            return ResponseEntity.ok(null);
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);
@@ -300,10 +317,10 @@ public class TasksController {
     
     
     @GetMapping(path = TaskLinks.RECORD_RANGE)
-    public ResponseEntity<?> getRecords(@RequestParam(value = "begin", required = true) String begin,@RequestParam(value = "end", required = true) String end, @RequestParam(value = "userid", required = true) Long userid,Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        long beginTime = Long.parseLong(begin);
-        long endTime = Long.parseLong(end);
-        Page<Record> events = recordService.getRecordRange(beginTime, endTime, userid, pageable);
+    public ResponseEntity<?> getRecords(@RequestParam(value = "begin", required = true) Long begin,@RequestParam(value = "end", required = true) Long end, @RequestParam(value = "userid", required = true) Long userid,Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        //long beginTime = Long.parseLong(begin);
+        //long endTime = Long.parseLong(end);
+        Page<Record> events = recordService.getRecordRange(begin, end, userid, pageable);
         return ResponseEntity.ok(events.getContent());
     }
     

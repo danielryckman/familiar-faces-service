@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.InvalidParameterException;
 import java.io.IOException;
+import java.io.File;
 
 @Slf4j
 @Service
@@ -88,7 +89,8 @@ public class PhotoService {
         	photo.setDatetoshow(photoDTO.getDatetoshow());
         	photo.setDatecreated(photoDTO.getDatecreated());
         	photo.setDatelastviewed(photoDTO.getDatelastviewed());
-        	photo.setComment(photoDTO.getComment());    	
+        	photo.setComment(photoDTO.getComment());    
+        	photo.setUploaddir(photoDTO.getUploaddir());
         }
         return photosRepository.save(photo);
     }
@@ -121,7 +123,8 @@ public class PhotoService {
         Page<Photo> allPhotos = photosRepository.findAll(pageable);
         List<Photo> returnPhotos = new ArrayList<>();
         for(Photo photo : allPhotos){
-        	if(photo.getUploaddir().contains("./upload/" +userid +"/" + album)){
+        	System.out.println("check photo uploaddir =" + photo.getUploaddir());
+        	if(photo.getUploaddir() != null && photo.getUploaddir().contains("./upload/" +userid +"/" + album)){
         		returnPhotos.add(photo);
         	}
         }
@@ -129,4 +132,27 @@ public class PhotoService {
         return page;
     }
     
+    public void deletePhotoFromAlbum(String album, long userid, String photoname, Pageable pageable) {
+        Page<Photo> allPhotos = photosRepository.findAll(pageable);       
+        String dirPath = "./upload/" + userid+ "/" + album;
+        try{
+        	String imagePath = dirPath + "/" + photoname + ".jpg";
+        	File f = new File(imagePath);
+        	if(f.exists() && !f.isDirectory()){
+        		Files.delete(Paths.get(imagePath));
+        	}
+        	System.out.println("Photo deleted successfully");
+        	 List<Photo> returnPhotos = new ArrayList<>();
+             for(Photo photo : allPhotos){
+            	System.out.println("check photo uploaddir =" + photo.getUploaddir());
+             	if(photo.getUploaddir() != null && photo.getUploaddir().contains(dirPath) && photo.getName().equals(photoname)){
+             		//System.out.println("delete photo " + photo.getName() + "from album " + album);
+             		photo.setUploaddir(null);
+             		photosRepository.save(photo);
+             	}
+             }
+        }catch(IOException ex){
+        	System.out.println("Failed to delete the photo." + ex);
+        }
+    }
 }

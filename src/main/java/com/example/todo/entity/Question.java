@@ -64,6 +64,15 @@ public class Question {
 		 this.test=test;
 	}
 	
+	public Question(String name, String hint, String description, String solution, String  category, String image){
+		 this.testname=name;
+		 this.hint=hint;
+		 this.description=description;
+		 this.solution=solution;
+		 this.category=category;
+		 this.image=image;
+	}	
+	
     @JsonBackReference
 	public Test getTest(){
 		return test;
