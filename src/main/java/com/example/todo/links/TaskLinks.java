@@ -25,6 +25,8 @@ public class TaskLinks {
     public static final String PHOTO_USER = "/photouser";
     public static final String PHOTO_RANGE = "/photorange";
     public static final String PHOTO_UPLOAD = "/photoupload";
+    public static final String ALBUM_CREATE = "/album";
+    public static final String ALBUMS = "/albums";
     public static final String RECORDS = "/records";
     public static final String RECORD = "/record";
     public static final String RECORD_USER = "/recorduser";

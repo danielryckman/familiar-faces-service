@@ -307,6 +307,26 @@ public class TasksController {
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);
         }
     }
+    
+    @PostMapping(path = TaskLinks.ALBUM_CREATE)
+    public ResponseEntity<?> createAlbum(@RequestParam(value = "userid", required = true) Long userid, @RequestParam(value = "album", required = true) String album, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        log.info("TasksController: create album " + album);
+        photoService.createAlbum(userid, album, pageable);
+        return ResponseEntity.ok(null);
+    }
+    
+    @GetMapping(path = TaskLinks.ALBUMS)
+    public ResponseEntity<?> getAllAlbums(@RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        try {
+        	log.info("TasksController query all albums for user: " + userid);
+            Page<String> events = photoService.getAlbums(userid, pageable);
+            return ResponseEntity.ok(events.getContent());
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Resource Not Found", exc);
+        }
+    }
+    
     /**-------------------------- records ----------------**/
     @GetMapping(path = TaskLinks.RECORDS)
     public ResponseEntity<?> getRecords(RecordDTO recordDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {

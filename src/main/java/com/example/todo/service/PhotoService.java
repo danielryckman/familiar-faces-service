@@ -25,6 +25,8 @@ import java.nio.file.StandardCopyOption;
 import java.security.InvalidParameterException;
 import java.io.IOException;
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.Arrays;
 
 @Slf4j
 @Service
@@ -70,7 +72,8 @@ public class PhotoService {
         Page<Photo> allPhotos = photosRepository.findAll(pageable);
         List<Photo> returnPhotos = new ArrayList<>();
         for(Photo photo : allPhotos){
-        	if(photo.getDatetoshow() < endTime && photo.getDatetoshow() > beginTime && photo.getMyuser().getId()== userid){
+        	//if(photo.getDatetoshow() < endTime && photo.getDatetoshow() > beginTime && photo.getMyuser().getId()== userid){
+        	if(!(photo.getDatetoshow() < beginTime) && photo.getMyuser().getId()== userid){
         		returnPhotos.add(photo);
         	}
         }
@@ -129,6 +132,30 @@ public class PhotoService {
         	}
         }
         Page<Photo> page = new PageImpl<>(returnPhotos, pageable, returnPhotos.size());
+        return page;
+    }
+    
+    public void createAlbum(long userid, String album, Pageable pageable){
+    	String dirPath = "./upload/" + userid+ "/" + album;
+        File f = new File(dirPath);
+        if(f.exists() && f.isDirectory()){
+        	throw new InvalidParameterException("Album " + album + " already exists. Please choose another name.");
+        }
+        System.out.println("Creating new album " + album);
+        f.mkdirs();
+    }
+    
+    public Page<String> getAlbums(long userid, Pageable pageable){
+    	String dirPath = "./upload/" + userid;
+        File f = new File(dirPath);
+        String[] directories = f.list(new FilenameFilter() {
+        	  @Override
+        	  public boolean accept(File current, String name) {
+        	    return new File(current, name).isDirectory() && !name.equals("internal");
+        	  }
+        });
+        List<String> returnList = Arrays.asList(directories);
+        Page<String> page = new PageImpl<>(returnList, pageable, returnList.size());
         return page;
     }
     
