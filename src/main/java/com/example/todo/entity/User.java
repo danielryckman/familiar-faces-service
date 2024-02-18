@@ -96,5 +96,13 @@ public class User {
     	return firstname;
     }
     
+    public String getPassword(){
+    	return password;
+    }
+
+    public void setPassword(String newPassword){
+        password = newPassword;
+    }
+    
     
 }

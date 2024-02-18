@@ -21,7 +21,7 @@ public class QuestionService {
 	
 	public static final String[] GENERAL_QUESTIONS = {"Which day of the week is today?", "Which month of the year is it?", "What year is this?"};
 	public static final String[] GENERAL_HINTS = {"relax", "relax", "relax"};
-	public static final String[] GENERAL_SOLUTIONS = {"monday", "April", "2023"};
+	public static final String[] GENERAL_SOLUTIONS = {"monday", "April", "2024"};
 
 	public static final String[] MONEY_QUESTIONS = {"How many 20 cent pieces are in $2.40?", "You are buying $19.40 of groceries. How much change would you receive back from a $20 note?", "How many quarters are in $8.75?"};
 	public static final String[] MONEY_HINTS = {"relax", "relax", "relax"};

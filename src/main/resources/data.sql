@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS users (
   gender VARCHAR(64) NOT NULL,
   nickname VARCHAR(64) DEFAULT NULL,
   songs VARCHAR(2048) DEFAULT NULL,
+  auth_token VARCHAR(64) DEFAULT NULL,
+  time_last_use BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS familymember (

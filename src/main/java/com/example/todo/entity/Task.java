@@ -56,7 +56,7 @@ public class Task {
     private User myuser;
     
     @Column
-    @OneToMany(mappedBy="task",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="task",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Photo> photos = new HashSet<>();
 
     @JsonBackReference
@@ -68,4 +68,5 @@ public class Task {
     public Set<Photo> getPhotos(){
     	return photos;
     }
+
 }

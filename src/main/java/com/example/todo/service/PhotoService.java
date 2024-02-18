@@ -65,20 +65,23 @@ public class PhotoService {
         Optional<User> userList = usersRepository.findById(userId);
         User user = userList.get();
         photo.setMyuser(user);
+        log.info("photo saved for photoid: " + photo.getId());
         return photosRepository.save(photo);
     }
     
-    public Page<Photo> getPhotoRange(long beginTime, long endTime, long userid, Pageable pageable) {
-        Page<Photo> allPhotos = photosRepository.findAll(pageable);
+    public List<Photo> getPhotoRange(long beginTime, long endTime, long userid) {
+        List<Photo> allPhotos = photosRepository.findAll();
         List<Photo> returnPhotos = new ArrayList<>();
+        
         for(Photo photo : allPhotos){
         	//if(photo.getDatetoshow() < endTime && photo.getDatetoshow() > beginTime && photo.getMyuser().getId()== userid){
-        	if(!(photo.getDatetoshow() < beginTime) && photo.getMyuser().getId()== userid){
+        	if(photo.getMyuser().getId()== userid){
         		returnPhotos.add(photo);
         	}
         }
-        Page<Photo> page = new PageImpl<>(returnPhotos, pageable, returnPhotos.size());
-        return page;
+        log.info("return photo size " + returnPhotos.size());
+        //Page<Photo> page = new PageImpl<>(returnPhotos, pageable, returnPhotos.size());
+        return returnPhotos;
     }
     
     public Photo updatePhoto(PhotoDTO photoDTO, Pageable pageable) {
@@ -95,6 +98,7 @@ public class PhotoService {
         	photo.setComment(photoDTO.getComment());    
         	photo.setUploaddir(photoDTO.getUploaddir());
         }
+        log.info("photo updated for photoid: " + photo.getId());
         return photosRepository.save(photo);
     }
     
@@ -123,7 +127,7 @@ public class PhotoService {
     }
     
     public Page<Photo> getPhotoFromAlbum(String album, long userid, Pageable pageable) {
-        Page<Photo> allPhotos = photosRepository.findAll(pageable);
+        List<Photo> allPhotos = photosRepository.findAll();
         List<Photo> returnPhotos = new ArrayList<>();
         for(Photo photo : allPhotos){
         	System.out.println("check photo uploaddir =" + photo.getUploaddir());

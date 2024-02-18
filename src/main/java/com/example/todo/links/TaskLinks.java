@@ -34,6 +34,7 @@ public class TaskLinks {
     public static final String FAMILYMEMBERS = "/familymembers";
     public static final String FAMILYMEMBER = "/familymember";
     public static final String FAMILYMEMBER_USER = "/familymemberuser";
+    public static final String AUTH = "/login";
 
     public TaskLinks(EntityLinks entityLinks) {
         this.entityLinks = entityLinks;

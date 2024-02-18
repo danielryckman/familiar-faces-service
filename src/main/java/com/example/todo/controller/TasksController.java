@@ -94,23 +94,33 @@ public class TasksController {
 
     @PostMapping(path = TaskLinks.CREATE_TASK_USER)
     public ResponseEntity<?> createTaskForUser(@RequestBody TaskDTO taskDTO, @RequestParam(value = "userid", required = true) Long userid,Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + taskDTO);
-        Task events = taskService.saveTask(userid, taskDTO);
-        return ResponseEntity.ok(events);
+    	try{
+	    log.info("TasksController: " + taskDTO);
+	    Task events = taskService.saveTask(userid, taskDTO);
+	    return ResponseEntity.ok(events);
+	}catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error creating Task: " +taskDTO.getName(), exc);
+        }
     }
 
     @PostMapping(path = TaskLinks.CREATE_TASK)
     public ResponseEntity<?> createTask(@RequestBody TaskDTO taskDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + taskDTO);
-        Task events = taskService.saveTask(taskDTO);
-        return ResponseEntity.ok(events);
+        try{
+            log.info("TasksController: " + taskDTO);
+            Task events = taskService.saveTask(taskDTO);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error creating Task: " +taskDTO.getName(), exc);
+        }
     }
 
     @RequestMapping(value = TaskLinks.CREATE_TASK, method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteTask(@RequestParam("name") String taskname, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> deleteTask(@RequestParam(value = "taskid", required = true) long taskId, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
-            log.info("TasksController::: " + taskname);
-            taskService.deleteTask(taskname);
+            log.info("TasksController:::delete " + taskId);
+            taskService.deleteTask(taskId);
             return ResponseEntity.ok(null);
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
@@ -134,16 +144,26 @@ public class TasksController {
     
     @PutMapping(path = TaskLinks.CREATE_TASK)
     public ResponseEntity<?> updateTask(@RequestBody TaskDTO taskDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: updating " + taskDTO);
-        Task events = taskService.updateTask(taskDTO, pageable);
-        return ResponseEntity.ok(events);
+        try{
+            log.info("TasksController: updating " + taskDTO);
+            Task events = taskService.updateTask(taskDTO, pageable);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error updating Task: " +taskDTO.getName(), exc);
+        }    
     }
    /**-------------------------- tests ----------------**/
     @GetMapping(path = TaskLinks.TESTS)
     public ResponseEntity<?> getTests(TestDTO testDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TestsController: " + testDTO);
-        Page<Test> events = testService.getTests(pageable);
-        return ResponseEntity.ok(events.getContent());
+        try{
+            log.info("TestsController: " + testDTO);
+            Page<Test> events = testService.getTests(pageable);
+            return ResponseEntity.ok(events.getContent());
+         }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error creating Test: " +testDTO.getName(), exc);
+        }
     }
     
     @PostMapping(path = TaskLinks.TEST)
@@ -208,30 +228,50 @@ public class TasksController {
     
     @PostMapping(path = TaskLinks.FAMILYMEMBER_USER)
     public ResponseEntity<?> createFamilymemberForUser(@RequestBody FamilymemberDTO familymemberDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + familymemberDTO);
-        Familymember events = familymemberService.saveFamilymember(familymemberDTO, userid, pageable);
-        return ResponseEntity.ok(events);
+        try{
+            log.info("TasksController: " + familymemberDTO);
+            Familymember events = familymemberService.saveFamilymember(familymemberDTO, userid, pageable);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error creating Familymember " + "for userid =" +userid, exc);
+        }
     }
 
     @GetMapping(path = TaskLinks.FAMILYMEMBER)
     public ResponseEntity<?> getFamilymemberByEmail(@RequestParam(value = "email", required = true) String email, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: get family member by " + email);
-        Familymember events = familymemberService.getFamilymemberByEmail(email, pageable);
-        return ResponseEntity.ok(events);
+        try{
+            log.info("TasksController: get family member by " + email);
+            Familymember events = familymemberService.getFamilymemberByEmail(email, pageable);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Error getting Familymember by email: " + email, exc);
+        }
     }
     /**-------------------------- photos ----------------**/
     @GetMapping(path = TaskLinks.PHOTOS)
     public ResponseEntity<?> getPhotos(PhotoDTO photoDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + photoDTO);
-        Page<Photo> events = photoService.getPhotos(pageable);
-        return ResponseEntity.ok(events.getContent());
+        try{
+            log.info("TasksController: " + photoDTO);
+            Page<Photo> events = photoService.getPhotos(pageable);
+            return ResponseEntity.ok(events.getContent());
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Error getting photo.", exc);
+        }    
     }
     
     @PostMapping(path = TaskLinks.PHOTO)
     public ResponseEntity<?> createPhoto(@RequestBody PhotoDTO photoDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + photoDTO);
-        Photo events = photoService.savePhoto(photoDTO, userid, pageable);
-        return ResponseEntity.ok(events);
+        try{
+            log.info("TasksController: " + photoDTO);
+            Photo events = photoService.savePhoto(photoDTO, userid, pageable);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error creating Photo: " + photoDTO.getName(), exc);
+        }
     }
     
     @GetMapping(path = TaskLinks.PHOTO_RANGE)
@@ -240,19 +280,24 @@ public class TasksController {
             long beginTime = Long.parseLong(begin);
             long endTime = Long.parseLong(end);
         	log.info("TasksController query from: " + beginTime + " to " + endTime);
-            Page<Photo> events = photoService.getPhotoRange(beginTime, endTime, userid, pageable);
-            return ResponseEntity.ok(events.getContent());
+            List<Photo> events = photoService.getPhotoRange(beginTime, endTime, userid);
+            return ResponseEntity.ok(events);
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Resource Not Found", exc);
+                HttpStatus.NOT_FOUND, "Error getting photo.", exc);
         }
     }
     
     @PutMapping(path = TaskLinks.PHOTO)
     public ResponseEntity<?> updatePhoto(@RequestBody PhotoDTO photoDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: updating " + photoDTO);
-        Photo events = photoService.updatePhoto(photoDTO, pageable);
-        return ResponseEntity.ok(events);
+        try{
+            log.info("TasksController: updating " + photoDTO);
+            Photo events = photoService.updatePhoto(photoDTO, pageable);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error updating Photo: " + photoDTO.getName(), exc);
+        }
     }
     
     @RequestMapping(value = TaskLinks.PHOTO, method=RequestMethod.DELETE)
@@ -310,9 +355,16 @@ public class TasksController {
     
     @PostMapping(path = TaskLinks.ALBUM_CREATE)
     public ResponseEntity<?> createAlbum(@RequestParam(value = "userid", required = true) Long userid, @RequestParam(value = "album", required = true) String album, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: create album " + album);
-        photoService.createAlbum(userid, album, pageable);
-        return ResponseEntity.ok(null);
+        try{
+            log.info("TasksController: create album " + album);
+            photoService.createAlbum(userid, album, pageable);
+            return ResponseEntity.ok(null);
+        }catch (RuntimeException exc) {
+            log.info("Error creating Album: " +album, exc);
+            return new ResponseEntity<>("User already exists", HttpStatus.BAD_REQUEST);        
+            //throw new ResponseStatusException(
+            //    HttpStatus.BAD_REQUEST, "Error creating Album: " +album, exc);
+        }
     }
     
     @GetMapping(path = TaskLinks.ALBUMS)
@@ -330,32 +382,68 @@ public class TasksController {
     /**-------------------------- records ----------------**/
     @GetMapping(path = TaskLinks.RECORDS)
     public ResponseEntity<?> getRecords(RecordDTO recordDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + recordDTO);
-        Page<Record> events = recordService.getRecords(pageable);
-        return ResponseEntity.ok(events.getContent());
+        try{
+            log.info("TasksController: " + recordDTO);
+            Page<Record> events = recordService.getRecords(pageable);
+            return ResponseEntity.ok(events.getContent());
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Error getting Records. ", exc);
+        }
     }
     
     
     @GetMapping(path = TaskLinks.RECORD_RANGE)
     public ResponseEntity<?> getRecords(@RequestParam(value = "begin", required = true) Long begin,@RequestParam(value = "end", required = true) Long end, @RequestParam(value = "userid", required = true) Long userid,Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        //long beginTime = Long.parseLong(begin);
-        //long endTime = Long.parseLong(end);
-        Page<Record> events = recordService.getRecordRange(begin, end, userid, pageable);
-        return ResponseEntity.ok(events.getContent());
+        try{
+            Page<Record> events = recordService.getRecordRange(begin, end, userid, pageable);
+            return ResponseEntity.ok(events.getContent());
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Error getting Records for userid = " + userid, exc);
+        }
     }
     
     @PostMapping(path = TaskLinks.RECORD)
     public ResponseEntity<?> createRecord(@RequestBody RecordDTO recordDTO, @RequestParam(value = "userid", required = true) Long userid, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: " + recordDTO);
-        Record events = recordService.saveRecord(recordDTO, userid, pageable);
-        return ResponseEntity.ok(events);
+        try{
+            log.info("TasksController: " + recordDTO);
+            Record events = recordService.saveRecord(recordDTO, userid, pageable);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error creating Record: ", exc);
+        }
     }
     
     @PutMapping(path = TaskLinks.RECORD)
     public ResponseEntity<?> updateRecord(@RequestBody RecordDTO recordDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-        log.info("TasksController: updating " + recordDTO);
-        Record events = recordService.updateRecord(recordDTO, pageable);
-        return ResponseEntity.ok(events);
+    	try{
+            log.info("TasksController: updating " + recordDTO);
+            Record events = recordService.updateRecord(recordDTO, pageable);
+            return ResponseEntity.ok(events);
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error updating Record: ", exc);
+        }
+    }
+    
+    @PostMapping(path = TaskLinks.AUTH)
+    public ResponseEntity<?> login(@RequestParam(value = "userinfo", required = true) String userinfo, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        try{      
+            Boolean authorize_check = userService.authorize(userinfo);
+            if (authorize_check == false){
+                throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "Unauthorized token creation request");
+            } else{
+                String uuid = userService.createToken();
+                return ResponseEntity.ok(uuid);
+            }
+        }catch (RuntimeException exc) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Error parsing login information: ", exc);
+        }
     }
     
 }
+

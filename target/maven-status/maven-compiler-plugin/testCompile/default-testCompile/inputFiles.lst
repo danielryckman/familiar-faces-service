@@ -1,4 +1,4 @@
-/home/lingryckman/mywork/stableDiffusion/testRestService/java-webservice-example/src/test/java/com/example/todo/mocks/TaskMocks.java
-/home/lingryckman/mywork/stableDiffusion/testRestService/java-webservice-example/src/test/java/com/example/todo/TodoApplicationTests.java
-/home/lingryckman/mywork/stableDiffusion/testRestService/java-webservice-example/src/test/java/com/example/todo/service/TaskServiceTest.java
-/home/lingryckman/mywork/stableDiffusion/testRestService/java-webservice-example/src/test/java/com/example/todo/integration/TasksControllerIntegrationTest.java
+/home/daniel/familiar-faces-service/src/test/java/com/example/todo/mocks/TaskMocks.java
+/home/daniel/familiar-faces-service/src/test/java/com/example/todo/TodoApplicationTests.java
+/home/daniel/familiar-faces-service/src/test/java/com/example/todo/integration/TasksControllerIntegrationTest.java
+/home/daniel/familiar-faces-service/src/test/java/com/example/todo/service/TaskServiceTest.java

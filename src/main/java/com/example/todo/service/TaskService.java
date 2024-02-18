@@ -99,12 +99,13 @@ public class TaskService {
         return task.get();
     }
     
-    public void deleteTask(String taskname) {
-    	List<Task> task = tasksRepository.findByName(taskname);
-    	for (Photo photo : task.get(0).getPhotos()){
+    public void deleteTask(long taskid) {
+    	Optional<Task> task = tasksRepository.findById(taskid);
+    	for (Photo photo : task.get().getPhotos()){
+            log.info("Deleting photo for this id: " + photo.getId());
     		photosRepository.delete(photo);
     	}
-    	tasksRepository.delete(task.get(0));
+    	tasksRepository.delete(task.get());
     }
 
     public Task saveTask(TaskDTO taskDTO) {
@@ -152,7 +153,7 @@ public class TaskService {
         		photo.setPersoninpic("Your " + familymember.getRelationship() + " " + familymember.getFirstname() + "(" + familymember.getNickname()+ ")");
         		photo.setTitle(task.getDescription() + " " + getPartOfDay(task.getSchedule()));
         		String fullname = familymember.getFirstname() +familymember.getLastname();
-        		prompt = "a photo of " +familymember.getDescription() +" "+ task.getDescription().replaceAll(familymember.getFirstname(),fullname.toLowerCase()) ;
+        		prompt = "a photo of " + fullname.toLowerCase() +" "+ task.getDescription().replaceAll(familymember.getFirstname(),"<lora:"+fullname.toLowerCase()+":0.8>") ;
         		break;
         	}
         }        
@@ -160,21 +161,15 @@ public class TaskService {
         String image = sdService.newImage(prompt, 20);
         task.setImage(image);
         photo.setImage(image);
-        //photo.setTask(task);
         photo.setMyuser(user);
-        //photosRepository.save(photo);
-        task.getPhotos().add(photo);
+        //photo.setTask(task);
         byte[] decoded = Base64.getDecoder().decode(image);
-        File outputFile =new File("/tmp/output.jpg");
-        try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
-            outputStream.write(decoded);
-        }catch(Exception ex){
-        	log.info("Error writing the image to local file: " + ex.getMessage());
-        }
         task.setMyuser(user);
-        return tasksRepository.save(task);
+        task.getPhotos().add(photo);       
+        Task returnTask = tasksRepository.save(task);
+        return returnTask;
     }
-    
+  
     public Task updateTask(TaskDTO taskDTO, Pageable pageable) {
         ModelMapper modelMapper = new ModelMapper();
         Task task = getTask(taskDTO.getId());

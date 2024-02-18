@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Base64;
+import java.util.UUID;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Service
@@ -33,6 +36,27 @@ public class UserService {
     public User getUser(long userId) {
         Optional<User> user = usersRepository.findById(userId);
         return user.get();
+    }
+
+    public boolean authorize(String userinfo){
+        byte[] bytes_decoded = Base64.getDecoder().decode(userinfo);
+        String decodedStr = new String(bytes_decoded, StandardCharsets.UTF_8);
+        String email = decodedStr.split("/")[0];
+        String password = decodedStr.split("/")[1];
+        Optional<User> user_optional = usersRepository.findByEmail(email);
+        User user = user_optional.get();
+        String userPassword = user.getPassword();
+        if(password.equals(userPassword)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public String createToken(){
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid.toString();
+        return uuidAsString;
     }
     
     public void deleteUser(long userId) {
