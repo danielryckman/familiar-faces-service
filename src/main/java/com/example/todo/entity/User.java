@@ -15,6 +15,7 @@ import com.example.todo.entity.Test;
 import com.example.todo.entity.Photo;
 import com.example.todo.entity.Record;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Getter
@@ -61,9 +62,14 @@ public class User {
        
     @Column(nullable = true)
     private String songs;
+
+    @Column(nullable = true)
+    private String auth_token;
     
     @Column
+    //@OneToMany(mappedBy="myuser",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OneToMany(mappedBy="myuser",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("myuser")
     private Set<Photo> photo=new HashSet<>();     
     
     @Column
@@ -80,6 +86,7 @@ public class User {
     
     @Column
     @OneToMany(mappedBy="myuser",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("myuser")
     private Set<Task> tasks = new HashSet<>();
     
     @JsonManagedReference
@@ -91,17 +98,54 @@ public class User {
     public Set<Task> getTasks(){
     	return tasks;
     }
+
+    @JsonManagedReference
+    public Set<Photo> getPhoto(){
+    	return photo;
+    }
     
     public String getFirstname(){
     	return firstname;
     }
     
+    public String getLastname(){
+    	return lastname;
+    }
+
+    public String getHobbies(){
+        return hobbies;
+    }
+
+    public long getId(){
+    	return id;
+    }
+
+    public String getDob(){
+    	return dob;
+    }
+
+    public String getNickname(){
+    	return nickname;
+    }
+
+   public String getEmail(){
+    	return email;
+    }
+
     public String getPassword(){
     	return password;
     }
 
     public void setPassword(String newPassword){
         password = newPassword;
+    }
+
+    public String getAuthToken(){
+        return auth_token;
+    }
+
+    public void setAuthToken(String newauth_token){
+        auth_token = newauth_token;
     }
     
     

@@ -1,4 +1,5 @@
 /home/daniel/familiar-faces-service/src/main/java/com/example/todo/entity/Photo.java
+/home/daniel/familiar-faces-service/src/main/java/com/example/todo/dto/AuthTokenDTO.java
 /home/daniel/familiar-faces-service/src/main/java/com/example/todo/entity/User.java
 /home/daniel/familiar-faces-service/src/main/java/com/example/todo/dto/TaskDTO.java
 /home/daniel/familiar-faces-service/target/generated-sources/java/com/example/todo/entity/QFamilymember.java

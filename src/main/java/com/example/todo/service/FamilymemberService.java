@@ -44,9 +44,13 @@ public class FamilymemberService {
         return familymember.isPresent() ? familymember.get(): null;
     }
     
-    public Familymember getFamilymemberByEmail(String email, Pageable pageable) {
+    public FamilymemberDTO getFamilymemberByEmail(String email, Pageable pageable) {
         Optional<Familymember> familymember = familymembersRepository.findByEmail(email);
-        return familymember.isPresent() ? familymember.get(): null;
+        Familymember dto_family = familymember.get();
+        //return new familymember.isPresent() ? familymember.get(): null;
+        return new FamilymemberDTO(dto_family.getId(), dto_family.getFirstname(), dto_family.getLastname(), dto_family.getDob(), dto_family.getNickname(), 
+        dto_family.getHobbies(), dto_family.getGender(), dto_family.getEmail(), dto_family.getPassword(), dto_family.getDescription(), 
+        dto_family.getRelationship(), dto_family.getIsAdmin(), dto_family.getUserId());
     }
     
     public void deleteFamilymember(long familymemberId) {

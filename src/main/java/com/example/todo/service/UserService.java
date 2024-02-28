@@ -1,7 +1,7 @@
 package com.example.todo.service;
-
 import com.example.todo.dto.UserDTO;
 import com.example.todo.entity.User;
+import com.example.todo.dto.AuthTokenDTO;
 import com.example.todo.entity.Test;
 import com.example.todo.repository.UsersRepository;
 import com.example.todo.repository.FamilymembersRepository;
@@ -39,7 +39,7 @@ public class UserService {
     }
 
     public boolean authorize(String userinfo){
-        byte[] bytes_decoded = Base64.getDecoder().decode(userinfo);
+        byte[] bytes_decoded = Base64.getMimeDecoder().decode(userinfo);
         String decodedStr = new String(bytes_decoded, StandardCharsets.UTF_8);
         String email = decodedStr.split("/")[0];
         String password = decodedStr.split("/")[1];
@@ -53,10 +53,10 @@ public class UserService {
         }
     }
 
-    public String createToken(){
+    public AuthTokenDTO createToken(){
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString();
-        return uuidAsString;
+        return new AuthTokenDTO(uuidAsString);
     }
     
     public void deleteUser(long userId) {
@@ -64,9 +64,14 @@ public class UserService {
     	usersRepository.delete(user);
     }
     
-    public User getUserByEmail(String email, Pageable pageable) {
+    public UserDTO getUserByEmail(String email, Pageable pageable) {
         Optional<User> user = usersRepository.findByEmail(email);
-        return user.isPresent() ? user.get(): null;
+        if(user.isPresent()){
+            User dto_user = user.get();
+        log.info("TasksController: FOUND");
+        return new UserDTO(dto_user.getId(), dto_user.getFirstname(), dto_user.getLastname(),  dto_user.getDob(), dto_user.getNickname(), dto_user.getHobbies(), dto_user.getGender(), dto_user.getEmail(),  dto_user.getPassword(), dto_user.getAuthToken());
+        }
+        return null;
     }
     
     public User saveUser(UserDTO userDTO, Pageable pageable) {

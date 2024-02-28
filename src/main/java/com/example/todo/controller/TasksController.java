@@ -2,6 +2,7 @@ package com.example.todo.controller;
 
 import com.example.todo.dto.TaskDTO;
 import com.example.todo.dto.TestDTO;
+import com.example.todo.dto.AuthTokenDTO;
 import com.example.todo.dto.UserDTO;
 import com.example.todo.dto.FamilymemberDTO;
 import com.example.todo.dto.PhotoDTO;
@@ -117,11 +118,19 @@ public class TasksController {
     }
 
     @RequestMapping(value = TaskLinks.CREATE_TASK, method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteTask(@RequestParam(value = "taskid", required = true) long taskId, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> deleteTask(@RequestParam(value = "taskid", required = true) long taskId, @RequestParam(value = "auth_token", required = true) String auth_token, @RequestParam(value = "userid", required = true) Long userId, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::delete " + taskId);
-            taskService.deleteTask(taskId);
-            return ResponseEntity.ok(null);
+            Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
+            if (authorize_check == false){
+                log.info("Invalid Authorization Token");
+                throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "Invalid Authorization Token");
+            } else{
+                log.info("Delete Successful");
+                taskService.deleteTask(taskId);
+                return ResponseEntity.ok(null);
+            }
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Resource Not Found", exc);
@@ -214,7 +223,8 @@ public class TasksController {
     @GetMapping(path = TaskLinks.USER)
     public ResponseEntity<?> getUserByEmail(@RequestParam(value = "email", required = true) String email, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         log.info("TasksController: get user by " + email);
-        User events = userService.getUserByEmail(email, pageable);
+        //User events = userService.getUserByEmail(email, pageable);
+        UserDTO events = userService.getUserByEmail(email, pageable);
         return ResponseEntity.ok(events);
     }
     
@@ -242,7 +252,8 @@ public class TasksController {
     public ResponseEntity<?> getFamilymemberByEmail(@RequestParam(value = "email", required = true) String email, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try{
             log.info("TasksController: get family member by " + email);
-            Familymember events = familymemberService.getFamilymemberByEmail(email, pageable);
+            FamilymemberDTO events = familymemberService.getFamilymemberByEmail(email, pageable); 
+            //Familymember events = familymemberService.getFamilymemberByEmail(email, pageable);
             return ResponseEntity.ok(events);
         }catch (RuntimeException exc) {
             throw new ResponseStatusException(
@@ -431,15 +442,19 @@ public class TasksController {
     @PostMapping(path = TaskLinks.AUTH)
     public ResponseEntity<?> login(@RequestParam(value = "userinfo", required = true) String userinfo, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try{      
+            log.info("TasksController: creating auth token for " + userinfo);
             Boolean authorize_check = userService.authorize(userinfo);
             if (authorize_check == false){
+                log.info("Unauthorized token creation request");
                 throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, "Unauthorized token creation request");
             } else{
-                String uuid = userService.createToken();
-                return ResponseEntity.ok(uuid);
+                AuthTokenDTO token = userService.createToken();
+                log.info("command successful");
+                return ResponseEntity.ok(token);
             }
         }catch (RuntimeException exc) {
+            log.info("command failed" + exc.getMessage());
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error parsing login information: ", exc);
         }

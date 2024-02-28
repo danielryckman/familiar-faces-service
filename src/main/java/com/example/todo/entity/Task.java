@@ -10,6 +10,7 @@ import java.util.HashSet;
 import com.example.todo.entity.User;
 import com.example.todo.entity.Photo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
@@ -53,10 +54,12 @@ public class Task {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "myuser", referencedColumnName = "id", nullable=true)
+    @JsonIgnoreProperties("tasks")
     private User myuser;
     
     @Column
     @OneToMany(mappedBy="task",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("task")
     private Set<Photo> photos = new HashSet<>();
 
     @JsonBackReference

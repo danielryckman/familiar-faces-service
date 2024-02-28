@@ -3,6 +3,7 @@ com/example/todo/repository/PhotosRepository.class
 com/example/todo/entity/Record.class
 com/example/todo/entity/Test.class
 com/example/todo/entity/Photo.class
+com/example/todo/dto/AuthTokenDTO.class
 com/example/todo/entity/QTask.class
 com/example/todo/entity/QTest.class
 com/example/todo/repository/FamilymembersRepository.class

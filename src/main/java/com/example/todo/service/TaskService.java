@@ -184,4 +184,15 @@ public class TaskService {
         }
         return tasksRepository.save(task);
     }
+
+    public boolean authorizeToken(String auth_token, long userId){
+        Optional<User> user_optional = usersRepository.findById(userId);
+        User user = user_optional.get();
+        String authToken = user.getAuthToken();
+        if(authToken.equals(auth_token)){
+            return true;
+        } else{
+            return false;
+        }
+    }
 }

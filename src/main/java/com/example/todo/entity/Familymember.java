@@ -83,5 +83,53 @@ public class Familymember {
     public void setMyuser(User user){
     	myuser =user;
     }
+
+    public String getFirstname(){
+    	return firstname;
+    }
+    
+    public String getLastname(){
+    	return lastname;
+    }
+
+    public String getHobbies(){
+        return hobbies;
+    }
+
+    public long getId(){
+    	return id;
+    }
+    
+    public long getUserId(){
+    	return userid;
+    }
+
+    public String getDob(){
+    	return dob;
+    }
+
+    public String getNickname(){
+    	return nickname;
+    }
+
+   public String getEmail(){
+    	return email;
+    }
+
+    public String getPassword(){
+    	return password;
+    }
+    
+    public String getDescription(){
+    	return description;
+    }
+    
+    public String getRelationship(){
+    	return relationship;
+    }
+    
+    public int getIsAdmin(){
+    	return isAdmin;
+    }
    
 }

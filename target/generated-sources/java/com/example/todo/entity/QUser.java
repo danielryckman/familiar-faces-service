@@ -20,6 +20,8 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
+    public final StringPath auth_token = createString("auth_token");
+
     public final StringPath description = createString("description");
 
     public final StringPath dob = createString("dob");
