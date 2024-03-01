@@ -11,6 +11,8 @@ import com.example.todo.entity.User;
 import com.example.todo.entity.Photo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -60,6 +62,8 @@ public class Task {
     @Column
     @OneToMany(mappedBy="task",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnoreProperties("task")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Photo> photos = new HashSet<>();
 
     @JsonBackReference
@@ -71,5 +75,15 @@ public class Task {
     public Set<Photo> getPhotos(){
     	return photos;
     }
+
+    public void addPhoto(Photo photo){
+         if(photos == null){
+             photos = new HashSet<>();
+         }
+         photo.setTask(this);
+         photos.add(photo);
+         //log.info("task add photo: taskid: " + id + ", photo count = " + photos.size());
+     }
+
 
 }

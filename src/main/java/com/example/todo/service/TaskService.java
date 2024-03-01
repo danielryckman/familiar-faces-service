@@ -100,8 +100,9 @@ public class TaskService {
     }
     
     public void deleteTask(long taskid) {
-    	Optional<Task> task = tasksRepository.findById(taskid);
-    	for (Photo photo : task.get().getPhotos()){
+        Optional<Task> task = tasksRepository.findById(taskid);
+        //issue with task.get().getPhotos() returning nothing
+        for (Photo photo : task.get().getPhotos()){
             log.info("Deleting photo for this id: " + photo.getId());
     		photosRepository.delete(photo);
     	}
@@ -165,7 +166,7 @@ public class TaskService {
         //photo.setTask(task);
         byte[] decoded = Base64.getDecoder().decode(image);
         task.setMyuser(user);
-        task.getPhotos().add(photo);       
+        task.addPhoto(photo);      
         Task returnTask = tasksRepository.save(task);
         return returnTask;
     }

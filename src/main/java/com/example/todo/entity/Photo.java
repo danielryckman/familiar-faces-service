@@ -69,12 +69,12 @@ public class Photo {
     //@EqualsAndHashCode.Exclude
     //@ToString.Exclude
     private User myuser;
-
+   
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task", referencedColumnName = "id", nullable=true)
-    @JsonIgnoreProperties("photos")
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "task", referencedColumnName = "id", nullable=true, insertable=true, updatable=false)
     private Task task;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "myrecord", referencedColumnName = "id", nullable=true)
     private Record myrecord;

@@ -53,9 +53,16 @@ public class UserService {
         }
     }
 
-    public AuthTokenDTO createToken(){
+    public AuthTokenDTO createToken(String userinfo){
+        byte[] bytes_decoded = Base64.getMimeDecoder().decode(userinfo);
+        String decodedStr = new String(bytes_decoded, StandardCharsets.UTF_8);
+        String email = decodedStr.split("/")[0];
         UUID uuid = UUID.randomUUID();
+        Optional<User> user_optional = usersRepository.findByEmail(email);
+        User user = user_optional.get();      
         String uuidAsString = uuid.toString();
+        user.setAuthToken(uuidAsString);
+        usersRepository.save(user);
         return new AuthTokenDTO(uuidAsString);
     }
     

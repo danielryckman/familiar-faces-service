@@ -159,6 +159,7 @@ public class TasksController {
         try {
             log.info("TasksController:::delete " + taskId);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
+            log.info("authorize_check" + authorize_check);
             if (authorize_check == false){
                 log.info("Invalid Authorization Token");
                 throw new ResponseStatusException(
@@ -293,20 +294,13 @@ public class TasksController {
     }
     
     @GetMapping(path = TaskLinks.USER)
-    public ResponseEntity<?> getUserByEmail(@RequestParam(value = "email", required = true) String email, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
-         try {
+    public ResponseEntity<?> getUserByEmail(@RequestParam(value = "email", required = true) String email, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+        try {
             log.info("TasksController:::getUserbyEmail " + email);
-            Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
-            if (authorize_check == false){
-                log.info("Invalid Authorization Token");
-                throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "Invalid Authorization Token");
-            } else{
-                log.info("TasksController: get user by " + email);
-                UserDTO events = userService.getUserByEmail(email, pageable);
-                return ResponseEntity.ok(events);
+            UserDTO events = userService.getUserByEmail(email, pageable);
+            return ResponseEntity.ok(events);
             }
-        } catch (RuntimeException exc) {
+        catch (RuntimeException exc) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error getUserByEmail: " + email, exc);
             }
@@ -346,20 +340,13 @@ public class TasksController {
     }
 
     @GetMapping(path = TaskLinks.FAMILYMEMBER)
-    public ResponseEntity<?> getFamilymemberByEmail(@RequestParam(value = "email", required = true) String email, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> getFamilymemberByEmail(@RequestParam(value = "email", required = true) String email, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::getFamilymemberByEmail " + email);
-            Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
-            if (authorize_check == false){
-                log.info("Invalid Authorization Token");
-                throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "Invalid Authorization Token");
-            } else{
-                log.info("TasksController: get family member by " + email);
-                FamilymemberDTO events = familymemberService.getFamilymemberByEmail(email, pageable); 
-                return ResponseEntity.ok(events);
+            FamilymemberDTO events = familymemberService.getFamilymemberByEmail(email, pageable); 
+            return ResponseEntity.ok(events);
             }
-        } catch (RuntimeException exc) {
+        catch (RuntimeException exc) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error getting Familymember by email: " + email, exc);
         }
@@ -569,7 +556,7 @@ public class TasksController {
                 throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, "Unauthorized token creation request");
             } else{
-                AuthTokenDTO token = userService.createToken();
+                AuthTokenDTO token = userService.createToken(userinfo);
                 log.info("command successful");
                 return ResponseEntity.ok(token);
             }
