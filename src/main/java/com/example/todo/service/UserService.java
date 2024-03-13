@@ -61,7 +61,7 @@ public class UserService {
         Optional<User> user_optional = usersRepository.findByEmail(email);
         User user = user_optional.get();      
         String uuidAsString = uuid.toString();
-        user.setAuthToken(uuidAsString);
+        user.setAuthtoken(uuidAsString);
         usersRepository.save(user);
         return new AuthTokenDTO(uuidAsString);
     }
@@ -77,7 +77,7 @@ public class UserService {
         if(user.isPresent()){
             User dto_user = user.get();
             log.info("userService: FOUND " + dto_user.getFirstname());
-        return new UserDTO(dto_user.getId(), dto_user.getFirstname(), dto_user.getLastname(),  dto_user.getDob(), dto_user.getNickname(), dto_user.getHobbies(), dto_user.getGender(), dto_user.getEmail(),  dto_user.getPassword(), dto_user.getAuthToken());
+        return new UserDTO(dto_user.getId(), dto_user.getFirstname(), dto_user.getLastname(),  dto_user.getDob(), dto_user.getNickname(), dto_user.getHobbies(), dto_user.getGender(), dto_user.getEmail(),  dto_user.getPassword(), dto_user.getAuthtoken(), dto_user.getLastused());
         }
         return null;
     }
@@ -86,7 +86,9 @@ public class UserService {
         ModelMapper modelMapper = new ModelMapper();
         User user = modelMapper.map(userDTO, User.class);
         log.info("SAVING USER:" + user.getPassword() + ", username: " + user.getFirstname() + " " + user.getLastname());
-        return usersRepository.save(user);
+        User newuser  = usersRepository.save(user);
+        log.info("DONE SAVING USER:" + newuser.getPassword() + ", username: " + newuser.getFirstname() + " " + newuser.getLastname() + " " + newuser.getId());
+        return newuser;
     }
     
     public User updateUser(UserDTO userDTO, Pageable pageable) {

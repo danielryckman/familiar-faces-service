@@ -119,7 +119,7 @@ public class User {
         return hobbies;
     }
 
-    public long getId(){
+    public Long getId(){
     	return id;
     }
 
@@ -143,19 +143,19 @@ public class User {
         password = newPassword;
     }
 
-    public String getAuthToken(){
+    public String getAuthtoken(){
         return authtoken;
     }
 
-    public void setAuthToken(String newauthtoken){
+    public void setAuthtoken(String newauthtoken){
         authtoken = newauthtoken;
     }
 
-    public long getLastUsed(){
+    public long getLastused(){
         return lastused;
     }
 
-    public void setLastUsed(long newlastused){
+    public void setLastused(long newlastused){
         lastused = newlastused;
     }
     

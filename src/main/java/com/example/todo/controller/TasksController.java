@@ -273,6 +273,7 @@ public class TasksController {
             return ResponseEntity.ok(events);
             
         } catch (RuntimeException exc) {
+            log.info("TasksController:::exception " + exc.getMessage());
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error createUser: " + userDTO, exc);
         }

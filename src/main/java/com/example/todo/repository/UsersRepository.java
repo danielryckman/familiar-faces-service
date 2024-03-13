@@ -34,8 +34,8 @@ public interface UsersRepository extends JpaRepository<User, Long>, JpaSpecifica
     Page<User> findByEmailIn(
             @Param("email") Collection<String> email, Pageable pageable);
     
-    Page<User> findByAuthTokenIn(
-            @Param("auth_token") Collection<String> auth_token, Pageable pageable);
+    Page<User> findByAuthtokenIn(
+            @Param("authtoken") Collection<String> authtoken, Pageable pageable);
     
     Page<User> findAll(Pageable pageable);
 

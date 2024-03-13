@@ -189,7 +189,7 @@ public class TaskService {
     public boolean authorizeToken(String auth_token, long userId){
         Optional<User> user_optional = usersRepository.findById(userId);
         User user = user_optional.get();
-        String authToken = user.getAuthToken();
+        String authToken = user.getAuthtoken();
         if(authToken.equals(auth_token)){
             return true;
         } else{
