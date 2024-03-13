@@ -72,10 +72,11 @@ public class UserService {
     }
     
     public UserDTO getUserByEmail(String email, Pageable pageable) {
+        log.info("userService: start " + email);
         Optional<User> user = usersRepository.findByEmail(email);
         if(user.isPresent()){
             User dto_user = user.get();
-        log.info("TasksController: FOUND");
+            log.info("userService: FOUND " + dto_user.getFirstname());
         return new UserDTO(dto_user.getId(), dto_user.getFirstname(), dto_user.getLastname(),  dto_user.getDob(), dto_user.getNickname(), dto_user.getHobbies(), dto_user.getGender(), dto_user.getEmail(),  dto_user.getPassword(), dto_user.getAuthToken());
         }
         return null;
@@ -84,6 +85,7 @@ public class UserService {
     public User saveUser(UserDTO userDTO, Pageable pageable) {
         ModelMapper modelMapper = new ModelMapper();
         User user = modelMapper.map(userDTO, User.class);
+        log.info("SAVING USER:" + user.getPassword() + ", username: " + user.getFirstname() + " " + user.getLastname());
         return usersRepository.save(user);
     }
     

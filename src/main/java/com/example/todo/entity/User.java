@@ -64,7 +64,10 @@ public class User {
     private String songs;
 
     @Column(nullable = true)
-    private String auth_token;
+    private String authtoken;
+
+    @Column(nullable = true)
+    private Long lastused;
     
     @Column
     //@OneToMany(mappedBy="myuser",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -141,11 +144,19 @@ public class User {
     }
 
     public String getAuthToken(){
-        return auth_token;
+        return authtoken;
     }
 
-    public void setAuthToken(String newauth_token){
-        auth_token = newauth_token;
+    public void setAuthToken(String newauthtoken){
+        authtoken = newauthtoken;
+    }
+
+    public long getLastUsed(){
+        return lastused;
+    }
+
+    public void setLastUsed(long newlastused){
+        lastused = newlastused;
     }
     
     

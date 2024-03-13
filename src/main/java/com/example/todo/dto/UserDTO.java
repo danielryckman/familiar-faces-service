@@ -22,13 +22,13 @@ public class UserDTO {
     private String gender;
     private String hobbies;
     private String relationship;
-    private String auth_token;
+    private String authtoken;
     private Set<PhotoDTO> photo;
     private Set<FamilymemberDTO> familymembers;
     private Set<RecordDTO> records;
     private Set<TaskDTO> tasks;
     private Set<TestDTO> tests;
-    public UserDTO(Long id, String firstname, String lastname, String dob, String nickname, String hobbies, String gender, String email, String password, String auth_token){
+    public UserDTO(Long id, String firstname, String lastname, String dob, String nickname, String hobbies, String gender, String email, String password, String authtoken){
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -38,6 +38,6 @@ public class UserDTO {
         this.gender = gender;
         this.email = email;
         this.password = password;
-        this.auth_token = auth_token;
+        this.authtoken = authtoken;
     }    
 }

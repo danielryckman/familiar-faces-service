@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class AuthTokenDTO {
-    private String auth_token;
+    private String authtoken;
     public AuthTokenDTO(String id){
-        auth_token = id;
+        authtoken = id;
     }    
 }

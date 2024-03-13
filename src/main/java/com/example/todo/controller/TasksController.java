@@ -65,7 +65,7 @@ public class TasksController {
     private Random random = new Random();
 
     @GetMapping(path = TaskLinks.TASKS)
-    public ResponseEntity<?> getTasks(TaskDTO taskDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> getTasks(TaskDTO taskDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::getTasks " + taskDTO);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -95,7 +95,7 @@ public class TasksController {
     }
     
     @GetMapping(path = TaskLinks.TASK)
-    public ResponseEntity<?> getTask(@PathVariable("id") Long taskId, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> getTask(@PathVariable("id") Long taskId, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
          try {
             log.info("TasksController:::getTask " + taskId);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -133,7 +133,7 @@ public class TasksController {
     }
 
     @PostMapping(path = TaskLinks.CREATE_TASK)
-    public ResponseEntity<?> createTask(@RequestBody TaskDTO taskDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> createTask(@RequestBody TaskDTO taskDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::createTask " + taskDTO);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -155,7 +155,7 @@ public class TasksController {
     }
 
     @RequestMapping(value = TaskLinks.CREATE_TASK, method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteTask(@RequestParam(value = "taskid", required = true) long taskId, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> deleteTask(@RequestParam(value = "taskid", required = true) long taskId, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::delete " + taskId);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -202,7 +202,7 @@ public class TasksController {
     }
    /**-------------------------- tests ----------------**/
     @GetMapping(path = TaskLinks.TESTS)
-    public ResponseEntity<?> getTests(TestDTO testDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> getTests(TestDTO testDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::GetTests " + testDTO);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -246,7 +246,7 @@ public class TasksController {
 
     /**-------------------------- users ----------------**/
     @GetMapping(path = TaskLinks.USERS)
-    public ResponseEntity<?> getUsers(UserDTO userDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> getUsers(UserDTO userDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::GetUsers " + userDTO);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -266,19 +266,12 @@ public class TasksController {
     }
     
     @PostMapping(path = TaskLinks.USER)
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::CreateUser " + userDTO);
-            Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
-            if (authorize_check == false){
-                log.info("Invalid Authorization Token");
-                throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "Invalid Authorization Token");
-            } else{
-                log.info("TasksController:::GetUsers Successful " + userDTO);
-                User events = userService.saveUser(userDTO, pageable);
-                return ResponseEntity.ok(events);
-            }
+            User events = userService.saveUser(userDTO, pageable);
+            return ResponseEntity.ok(events);
+            
         } catch (RuntimeException exc) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error createUser: " + userDTO, exc);
@@ -301,6 +294,7 @@ public class TasksController {
             return ResponseEntity.ok(events);
             }
         catch (RuntimeException exc) {
+            log.info("TasksController::exception " + exc.getMessage());
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error getUserByEmail: " + email, exc);
             }
@@ -308,7 +302,7 @@ public class TasksController {
     
     /**-------------------------- family members ----------------**/
     @GetMapping(path = TaskLinks.FAMILYMEMBERS)
-    public ResponseEntity<?> getFamilymembers(FamilymemberDTO familymemberDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> getFamilymembers(FamilymemberDTO familymemberDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::getFamilymembers " + familymemberDTO);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -322,6 +316,7 @@ public class TasksController {
                 return ResponseEntity.ok(events.getContent());
             }
         } catch (RuntimeException exc) {
+            log.info("TasksController::exception " + exc.getMessage());
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error getFamilymembers: " + familymemberDTO, exc);
         }    
@@ -353,7 +348,7 @@ public class TasksController {
     }
     /**-------------------------- photos ----------------**/
     @GetMapping(path = TaskLinks.PHOTOS)
-    public ResponseEntity<?> getPhotos(PhotoDTO photoDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> getPhotos(PhotoDTO photoDTO, @RequestParam(value = "userid", required = true) long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::getPhotos " + photoDTO);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
@@ -373,7 +368,7 @@ public class TasksController {
     }
     
     @PostMapping(path = TaskLinks.PHOTO)
-    public ResponseEntity<?> createPhoto(@RequestBody PhotoDTO photoDTO, @RequestParam(value = "userid", required = true) Long userId, @RequestHeader(value = "auth_token", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
+    public ResponseEntity<?> createPhoto(@RequestBody PhotoDTO photoDTO, @RequestParam(value = "userid", required = true) Long userId, @RequestHeader(value = "authtoken", required = true) String auth_token, Pageable pageable, PersistentEntityResourceAssembler resourceAssembler) {
         try {
             log.info("TasksController:::createPhoto " + photoDTO);
             Boolean authorize_check = taskService.authorizeToken(auth_token, userId);
