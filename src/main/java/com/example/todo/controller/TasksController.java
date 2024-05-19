@@ -295,7 +295,7 @@ public class TasksController {
             return ResponseEntity.ok(events);
             }
         catch (RuntimeException exc) {
-            log.info("TasksController::exception " + exc.getMessage());
+            log.info("TasksController::exception getUserByEmail " + exc.getMessage());
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Error getUserByEmail: " + email, exc);
             }

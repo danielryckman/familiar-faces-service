@@ -153,8 +153,10 @@ public class TaskService {
         	if(task.getDescription().toLowerCase().contains(familymember.getFirstname().toLowerCase())){
         		photo.setPersoninpic("Your " + familymember.getRelationship() + " " + familymember.getFirstname() + "(" + familymember.getNickname()+ ")");
         		photo.setTitle(task.getDescription() + " " + getPartOfDay(task.getSchedule()));
-        		String fullname = familymember.getFirstname() +familymember.getLastname();
-        		prompt = "a photo of " + fullname.toLowerCase() +" "+ task.getDescription().replaceAll(familymember.getFirstname(),"<lora:"+fullname.toLowerCase()+":0.8>") ;
+        		String fullname = familymember.getFirstname() + familymember.getLastname();
+        		prompt = "a photo of " + fullname.toLowerCase() +" "+ task.getDescription().replaceAll(familymember.getFirstname(),"<lora:"+fullname.toLowerCase()+":0.8>");
+                //prompt = "<lora:"+fullname+"Final:1> " + task.getDescription();
+                log.info(prompt);
         		break;
         	}
         }        

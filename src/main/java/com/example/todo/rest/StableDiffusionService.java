@@ -40,19 +40,23 @@ public class StableDiffusionService {
 	    headers.add("Authorization", "Basic ZmFtaWxpYXJmYWNlc2FwaToxMjE5OGMwZS05ZDI2LTExZWQtYjM2Ny05MzdmZjgwZTM2YTI=");
 	    log.info("invoking the stable diffusion service:" + prompt);
 	    JSONObject jsonObject = new JSONObject();
-	    prompt += " (smiling:0.5), skin pores, couture, (30mm Sigma f/1.4 ZEISS lens, F1.4, 1/800s, ISO 100, photography:1.1), delicate, masterpiece, beautiful detailed, colorful, finely detailed, detailed lips, intricate details, film grain";
+		if(!(prompt.contains("danielryckman"))){
+			prompt += " (smiling:0.5), skin pores, couture, (30mm Sigma f/1.4 ZEISS lens, F1.4, 1/800s, ISO 100, photography:1.1), delicate, masterpiece, beautiful detailed, colorful, finely detailed, detailed lips, intricate details, film grain";
+	    }
 	    jsonObject.put("prompt", prompt);
 	    jsonObject.put("negative_prompt", negativePrompt);
 	    jsonObject.put("save_images", true);
 	    if(prompt.contains("zdanielryckman")){
 	    	jsonObject.put("restore_faces", false);
-	    }else{
+	    }
+		else{
 	    	jsonObject.put("restore_faces", true);
 	    }
 	    jsonObject.put("steps", steps);
 		HttpEntity<String> request = 
 			      new HttpEntity<String>(jsonObject.toString(), headers);
 		String response = restTemplate.postForObject(newImageUrl, request, String.class);
+		log.info(response);
 		try{
 			ObjectMapper mapper = new ObjectMapper();
 			ImageResponse responseObj = mapper.readValue(response, ImageResponse.class);
